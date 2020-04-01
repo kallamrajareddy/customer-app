@@ -25,3 +25,5 @@ yarn-error.log*
 *.njsproj
 *.sln
 *.sw?
+kallam-user-desktop-api/src/main/resources/public/index.html
+kallam-user-desktop-api/src/main/resources/public/index.html
