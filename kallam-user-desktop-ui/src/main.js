@@ -8,7 +8,11 @@ import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
 import Axios from 'axios'
 //import VueAxios from 'vue-axios'
-
+import Loading from 'vue-loading-overlay';
+// Import stylesheet
+import 'vue-loading-overlay/dist/vue-loading.css';
+// Init plugin
+Vue.use(Loading);
 // Install BootstrapVue
 Vue.prototype.$http = Axios;
 Vue.use(BootstrapVue)
@@ -26,5 +30,6 @@ Vue.config.productionTip = false
 new Vue({
     router,
     store,
+    Loading,
     render: h => h(App)
 }).$mount('#app')
