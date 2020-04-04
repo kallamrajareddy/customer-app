@@ -1,7 +1,7 @@
 // vue.config.js
 module.exports = {
     //prod
-    //publicPath: '/desktop/',
+    publicPath: '/desktop/',
     // proxy all webpack dev-server requests starting with /api
     // to our Spring Boot backend (localhost:8088) using http-proxy-middleware
     // see https://cli.vuejs.org/config/#devserver-proxy

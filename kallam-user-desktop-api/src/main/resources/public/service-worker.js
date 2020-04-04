@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
 importScripts(
-  "/desktop/precache-manifest.76a7e92c63e1d1dcfd0f906d2a4b4328.js"
+  "/desktop/precache-manifest.238a5f568861ffdb7112b49080eccd5b.js"
 );
 
 workbox.core.setCacheNameDetails({prefix: "kallam-user-desktop-ui"});
