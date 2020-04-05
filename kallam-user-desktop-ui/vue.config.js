@@ -46,6 +46,14 @@ module.exports = {
                 ws: true,
                 changeOrigin: true,
                 logLevel: "debug"
+            },
+            '^/middleware/api/secured/get-broker-Lst': {
+                // target: 'http://localhost:8080/oauth/token',
+                target: "http://localhost:9002",
+                pathRewrite: { "^/middleware/api/secured/get-broker-Lst": "/middleware/api/secured/get-broker-Lst" }, // this configuration needs to correspond to the Spring Boot backends' application.properties server.port
+                ws: true,
+                changeOrigin: true,
+                logLevel: "debug"
             }
         }
     },

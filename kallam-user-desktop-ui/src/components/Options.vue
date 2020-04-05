@@ -2,7 +2,7 @@
   <b-card>
     <b-row>
       <b-col>
-        <form ref="form" @submit.stop.prevent="handleSubmit">
+        <form ref="form" @submit.stop.prevent>
           <b-row>
             <b-col></b-col>
             <b-col>

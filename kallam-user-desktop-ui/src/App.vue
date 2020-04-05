@@ -139,4 +139,17 @@ export default {
   background-color: #fff;
    margin:3px
 }
+
+.table thead tr th{
+  background-color: azure !important;
+}
+
+.table.b-table > tbody > .table-active, .table.b-table > tbody > .table-active > th, .table.b-table > tbody > .table-active > td {
+    background-color: lavender !important;
+    color: green;
+}
+.b-table-sticky-header {
+    overflow-y: auto;
+    max-height: 400px !important;
+}
 </style>
