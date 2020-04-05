@@ -31,7 +31,7 @@ public class OauthController {
 
 	@PostMapping("/oauth/token")
 	public ResponseEntity getOauth(@RequestBody LoginBean login) {
-		Map resp = null;
+		ResponseEntity resp = null;
 		try {
 			resp = getToken(login.getUsername(), login.getPassword());
 			System.out.println();
@@ -42,7 +42,7 @@ public class OauthController {
 			return ResponseEntity.ok(e.getResponseBodyAsString());
 		}
 
-		return getRoles(resp.get("access_token").toString());
+		return resp;
 
 	}
 	
@@ -100,7 +100,7 @@ public class OauthController {
 	        return response;
 	    }
 
-    private Map getToken(String uname, String pass) throws HttpStatusCodeException {
+    private ResponseEntity getToken(String uname, String pass) throws HttpStatusCodeException {
     	HttpHeaders headers = getHeaders();  
         RestTemplate restTemplate = new RestTemplate();
 	    MultiValueMap<String, String> map= new LinkedMultiValueMap<String, String>();
@@ -111,7 +111,7 @@ public class OauthController {
         HttpEntity requestEntity = new HttpEntity<MultiValueMap<String, String>>(map, headers);
         Map response = null;
         response = restTemplate.postForObject(securityPropConfig.getOauthTokenUrl(), requestEntity, HashMap.class);
-        return response;
+        return ResponseEntity.ok(response);
     }
        
     private HttpHeaders getHeaders() {

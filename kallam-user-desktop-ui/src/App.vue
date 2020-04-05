@@ -1,7 +1,7 @@
 <template>
   <div id="app">
-    <b-navbar toggleable="lg" type="dark" variant="primary" v-if="isLoggedIn">
-      <b-navbar-brand href="/login" v-if="!isLoggedIn">Login</b-navbar-brand>
+    <b-navbar toggleable="lg" type="dark" variant="primary" v-if="isLoggedIn && compStatus">
+      <b-navbar-brand href="/login" v-if="!isLoggedIn  && compStatus">Login</b-navbar-brand>
 
       <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
 
@@ -32,7 +32,7 @@
             <b-dropdown-item-button>Booking Details</b-dropdown-item-button>
           </b-dropdown>
 
-          <b-nav-form>
+          <!-- <b-nav-form>
             <b-form-input size="sm" class="mr-sm-2" placeholder="Account Search"></b-form-input>
             <b-button
               size="lg"
@@ -55,7 +55,7 @@
               <b-icon icon="search" aria-hidden="true"></b-icon>
               <span class="sr-only">Search</span>
             </b-button>
-          </b-nav-form>
+          </b-nav-form> -->
 
           <!--  -->
         </b-navbar-nav>
@@ -100,6 +100,9 @@ export default {
   computed: {
     isLoggedIn() {
       return this.$store.getters.isLoggedIn;
+    },
+    compStatus() {
+      return this.$store.getters.compStatus;
     },
     username() {
       return this.$store.state.user.username;

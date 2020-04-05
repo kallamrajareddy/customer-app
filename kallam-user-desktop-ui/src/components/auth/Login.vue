@@ -126,12 +126,21 @@ export default {
             .dispatch("master")
             .then(res => {
               this.company = res;
-              loader.hide();
-              if (this.$store.state.user.isAdmin) {
-                this.$bvModal.show("modal-company");
-              } else {
-                this.$router.push("/");
-              }
+              this.$store
+                .dispatch("userData")
+                .then(() => {
+                  loader.hide();
+                  if (this.$store.getters.isAdmin) {
+                    this.$bvModal.show("modal-company");
+                  } else {
+                    let select = this.company.find(
+                      comp => comp.value === this.$store.state.user.assComp
+                    );
+                    this.$store.dispatch("userComp", select);
+                    this.$router.push("/");
+                  }
+                })
+                .catch(err => alert(err));
             })
             .catch(err => alert(err));
         })

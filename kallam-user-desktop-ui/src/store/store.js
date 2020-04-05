@@ -10,17 +10,16 @@ export default new Vuex.Store({
         token: localStorage.getItem('token') || '',
         user: {},
         master: {},
-        selectedCompany: {}
+        selectedCompany: ''
     },
     plugins: [createPersistedState()],
     mutations: {
         auth_request(state) {
             state.status = 'loading'
         },
-        auth_success(state, userDetaisl) {
+        auth_success(state, token) {
             state.status = 'success'
-            state.token = userDetaisl.token
-            state.user = userDetaisl.user
+            state.token = token
         },
         auth_error(state) {
             state.status = 'error'
@@ -30,7 +29,7 @@ export default new Vuex.Store({
             state.token = '';
             state.user = {};
             state.master = {};
-            state.selectedCompany = {};
+            state.selectedCompany = '';
         },
         masterData(state, master) {
             state.master = master;
@@ -65,22 +64,12 @@ export default new Vuex.Store({
                         // }
                     )
                     .then(resp => {
-                        let token = resp.data.body.details.tokenValue
-                        let user = resp.data.body.userAuthentication.principal;
-                        user.isAdmin = false;
-                        let auth = user.authorities;
-                        if (auth.some(e => e.authority === 'ROLE_SUPER') || auth.some(e => e.authority === 'ROLE_ADMIN')) {
-                            user.isAdmin = true;
-                        }
-                        const userdetsils = {
-                            token,
-                            user
-                        }
-                        token = 'Bearer ' + token
+                        let token = resp.data.access_token;
+                        token = 'Bearer ' + token;
                         localStorage.setItem('token', token)
                             // Add the following line:
                         axios.defaults.headers.common['Authorization'] = token
-                        commit('auth_success', userdetsils)
+                        commit('auth_success', token)
                         resolve(resp)
                     })
                     .catch(err => {
@@ -123,7 +112,7 @@ export default new Vuex.Store({
                 axios.get('/security/users/user-details')
                     .then(resp => {
                         commit('userData', resp.data);
-                        resolve(resp.data);
+                        resolve();
                     })
                     .catch(err => {
                         commit('auth_error', err)
@@ -153,5 +142,12 @@ export default new Vuex.Store({
     getters: {
         isLoggedIn: state => !!state.token,
         authStatus: state => state.status,
+        compStatus: state => !!state.selectedCompany,
+        isAdmin: state => {
+            if (state.user.roles.some(e => e === 'ROLE_SUPER') || state.user.roles.some(e => e === 'ROLE_ADMIN')) {
+                return true;
+            }
+            return false;
+        }
     }
 })
