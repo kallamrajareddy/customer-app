@@ -34,6 +34,9 @@ export default new Vuex.Store({
         masterData(state, master) {
             state.master = master;
         },
+        updateMaster(state, master) {
+            state.master = master;
+        },
         userData(state, user) {
             state.user = user;
         },
@@ -130,6 +133,20 @@ export default new Vuex.Store({
                     .then(resp => {
                         commit('masterData', resp.data);
                         resolve(resp.data.company);
+                    })
+                    .catch(err => {
+                        commit('auth_error', err)
+                        localStorage.removeItem('token')
+                        reject(err)
+                    })
+            })
+        },
+        updateMaster({ commit }, master) {
+            return new Promise((resolve, reject) => {
+                axios.post('/middleware/api/secured/update-masterdata', master)
+                    .then(resp => {
+                        commit('updateMaster', resp.data);
+                        resolve();
                     })
                     .catch(err => {
                         commit('auth_error', err)

@@ -1,4 +1,5 @@
 <template>
+<b-card>
   <div class="about">
     <multiselect v-model="value" :options="options"  :multiple="true" :taggable="true">
       <!-- <template slot="option" slot-scope="props">
@@ -7,6 +8,7 @@
     </multiselect>
     <span>{{value}}</span>
   </div>
+  </b-card>
   
 </template>
 

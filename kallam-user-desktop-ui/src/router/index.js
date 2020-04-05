@@ -2,6 +2,9 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '@/views/Home.vue'
 import Login from '@/components/auth/Login'
+import Options from '@/components/Options'
+import Account from '@/components/account/Account'
+import Booking from '@/components/bookings/Booking'
 import store from '@/store/store'
 
 Vue.use(VueRouter)
@@ -10,6 +13,30 @@ const routes = [{
         path: '/',
         name: 'Home',
         component: Home,
+        meta: {
+            requiresAuth: true
+        }
+    },
+    {
+        path: '/account',
+        name: 'Account',
+        component: Account,
+        meta: {
+            requiresAuth: true
+        }
+    },
+    {
+        path: '/options',
+        name: 'Options Master',
+        component: Options,
+        meta: {
+            requiresAuth: true
+        }
+    },
+    {
+        path: '/bookings',
+        name: 'Bookings',
+        component: Booking,
         meta: {
             requiresAuth: true
         }

@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <b-navbar toggleable="lg" type="dark" variant="primary" v-if="isLoggedIn && compStatus">
+    <b-navbar toggleable="lg" type="dark" variant="primary" v-if="isLoggedIn && compStatus" style="margin-bottom:5px">
       <b-navbar-brand href="/login" v-if="!isLoggedIn  && compStatus">Login</b-navbar-brand>
 
       <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
@@ -11,12 +11,12 @@
             <template v-slot:button-content>
               <b-icon icon="pencil-square"></b-icon>Masters
             </template>
-            <b-dropdown-item-button>
+            <b-dropdown-item-button @click="$router.push('/options')" v-if="$store.getters.isAdmin">
               <b-icon icon="card-checklist" aria-hidden="true"></b-icon>Options Master
               <span class="sr-only">(Click to unlock)</span>
             </b-dropdown-item-button>
-            <b-dropdown-divider></b-dropdown-divider>
-            <b-dropdown-item-button>
+            <b-dropdown-divider v-if="$store.getters.isAdmin"></b-dropdown-divider>
+            <b-dropdown-item-button  @click="$router.push('/account')">
               <b-icon icon="person-check" aria-hidden="true"></b-icon>Acount Master
               <span class="sr-only">(Click to unlock)</span>
             </b-dropdown-item-button>
@@ -105,7 +105,7 @@ export default {
       return this.$store.getters.compStatus;
     },
     username() {
-      return this.$store.state.user.username;
+      return this.$store.state.user.name;
     }
   }
 };
@@ -118,7 +118,9 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
+  /* background-color: #fff; */
   background-color: #d6d8db;
+  padding-bottom: 5px;
 }
 
 #nav {
@@ -132,5 +134,9 @@ export default {
 
 #nav a.router-link-exact-active {
   color: #42b983;
+}
+.card{
+  background-color: #fff;
+   margin:3px
 }
 </style>

@@ -31,6 +31,14 @@ module.exports = {
                 changeOrigin: true,
                 logLevel: "debug"
             },
+            '^/middleware/api/secured/update-masterdata': {
+                // target: 'http://localhost:8080/oauth/token',
+                target: "http://localhost:9002",
+                pathRewrite: { "^/middleware/api/secured/update-masterdata": "/middleware/api/secured/update-masterdata" }, // this configuration needs to correspond to the Spring Boot backends' application.properties server.port
+                ws: true,
+                changeOrigin: true,
+                logLevel: "debug"
+            },
             '^/security/users/user-details': {
                 // target: 'http://localhost:8080/oauth/token',
                 target: "http://localhost:8182",
