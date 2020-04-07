@@ -61,9 +61,9 @@
                     <b-card
                       :id="idx"
                       @click="clickDeleteItems(item, idx)"
-                      style="cursor: pointer; background-color: azure;"
+                      style="cursor: pointer; background-color: azure; width:200px;text-align:left"
                     >
-                      <span style="white-space: nowrap;">
+                      <span style="white-space: nowrap; text-align:left">
                         <strong>{{item}}</strong>
                       </span>
                     </b-card>
@@ -103,9 +103,9 @@
                     <b-card
                       :id="idx"
                       @click="clickDeleteRelation(item, idx)"
-                      style="cursor: pointer; background-color: azure;"
+                     style="cursor: pointer; background-color: azure; width:200px;text-align:left"
                     >
-                      <span style="white-space: nowrap;">
+                      <span style="white-space: nowrap; text-align:left">
                         <strong>{{item}}</strong>
                       </span>
                     </b-card>
@@ -145,9 +145,9 @@
                     <b-card
                       :id="idx"
                       @click="clickDeleteMeasurment(item, idx)"
-                      style="cursor: pointer; background-color: azure;"
+                      style="cursor: pointer; background-color: azure; width:200px;text-align:left"
                     >
-                      <span style="white-space: nowrap;">
+                      <span style="white-space: nowrap; text-align:left">
                         <strong>{{item}}</strong>
                       </span>
                     </b-card>
@@ -187,9 +187,9 @@
                     <b-card
                       :id="idx"
                       @click="clickDeleteIntrest(item, idx)"
-                      style="cursor: pointer; background-color: azure;"
+                      style="cursor: pointer; background-color: azure; width:200px;text-align:left"
                     >
-                      <span style="white-space: nowrap;">
+                      <span style="white-space: nowrap; text-align:left">
                         <strong>{{item}}</strong>
                       </span>
                     </b-card>
@@ -272,6 +272,10 @@ export default {
         })
         .then(value => {
           if (value) {
+            this.masterData.typeOfItems.sort();
+            this.masterData.typeOfIntrest.sort();
+            this.masterData.typeOfMeasurment.sort();
+            this.masterData.typeOfRelation.sort();
             this.$store
               .dispatch("updateMaster", this.masterData)
               .then(() => {
@@ -286,7 +290,7 @@ export default {
                     centered: true
                   })
                   .then(value => {
-                    if(value)this.$router.push("/");
+                    if(value)this.$router.push("/options");
                   })
                   .catch(err => {
                     alert(err);

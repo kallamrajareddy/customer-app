@@ -18,7 +18,8 @@ Vue.prototype.$http = Axios;
 Vue.use(BootstrapVue)
     // Optionally install the BootstrapVue icon components plugin
 Vue.use(IconsPlugin)
-    //Vue.use(VueAxios, axios)
+Vue.use(require('vue-moment'));
+//Vue.use(VueAxios, axios)
 
 const token = localStorage.getItem('token');
 if (token) {

@@ -22,11 +22,12 @@ export default {
   components: { Multiselect },
     data () {
       return {
-        value: ['of'],
+        value: [],
         options: ['list', 'of', 'options']
       }
     },
 mounted(){
+   this.options = this.$store.state.master.typeOfItems;
   // this.$http
   //       .get("/middleware/api/secured/broker-count")
   //       .then(response => {

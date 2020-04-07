@@ -120,7 +120,6 @@ export default {
   color: #2c3e50;
   /* background-color: #fff; */
   background-color: #d6d8db;
-  padding-bottom: 5px;
 }
 
 #nav {
@@ -152,4 +151,26 @@ export default {
     overflow-y: auto;
     max-height: 400px !important;
 }
+
+/* #preview {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  vertical-align: middle;
+  margin-top: 20px;
+} */
+
+#preview img {
+  width: 200px;
+  height: 200px;
+}
+label {
+    display: inline-block;
+    margin-bottom: 0.5rem;
+    font-weight: bold;
+}
+.my-card-heading{
+  text-align:center;font-weight: bold;margin-bottom: 0.5rem; font-size: 1.3rem;color: blue;
+}
+
 </style>
