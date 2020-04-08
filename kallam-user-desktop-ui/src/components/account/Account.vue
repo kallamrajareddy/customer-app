@@ -193,9 +193,8 @@ export default {
   },
   methods: {
       editAccount(){
-          debugger;
           let brokerNo = this.selected[0].brokerNo;
-          this.$router.push({name: "UpdateAccount", params :{brokerNo: brokerNo}})
+          this.$router.push({name: "UpdateAccount", params :{brokerNo: brokerNo, search: this.accountSearch}})
       },
     onRowSelected(item) {
       this.selected = item;
@@ -234,6 +233,11 @@ export default {
                      }
                  })
               });*/
+               response.data.forEach(function(account){ 
+                 if(account.defaulter){
+                     account._rowVariant = 'danger'
+                 }
+              });
           this.items = response.data;
           this.totalRows = this.items.length;
           loader.hide();
@@ -246,6 +250,14 @@ export default {
           // always executed
         });
     }
+  },
+  mounted(){
+      if(this.accountSearch != undefined && this.accountSearch != '' ){
+          this.searchAccount();
+      }
+  },
+  created() {
+      if(this.$route.params.search)this.accountSearch = this.$route.params.search;
   }
 };
 </script>

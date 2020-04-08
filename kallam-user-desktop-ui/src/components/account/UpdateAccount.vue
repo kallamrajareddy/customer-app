@@ -1,10 +1,10 @@
 <template>
-  <b-card>
-      <b-row>
-          <b-col>
-          <span class="my-card-heading">Account Creation</span>
-          </b-col>
-      </b-row>
+  <b-card :style="{'background-color': (form.defaulter)?'red':'azure'}">
+    <b-row>
+      <b-col>
+        <span class="my-card-heading">Update Account</span>
+      </b-col>
+    </b-row>
     <b-form ref="form" @submit.stop.prevent>
       <b-row>
         <b-col md="1" class="col-padding-margin-right">
@@ -13,9 +13,20 @@
           </b-form-group>
         </b-col>
         <b-col md="3" class="col-padding-margin-right">
-          <b-form-group id="brokerNameLbl" label="Name" :state="nameState"
-                invalid-feedback="Name is Required" label-for="brokerName">
-            <b-form-input id="brokerName" @keypress="checkFormValidity" :state="nameState" v-model="form.brokerName" required></b-form-input>
+          <b-form-group
+            id="brokerNameLbl"
+            label="Name"
+            :state="nameState"
+            invalid-feedback="Name is Required"
+            label-for="brokerName"
+          >
+            <b-form-input
+              id="brokerName"
+              @keypress="checkFormValidity"
+              :state="nameState"
+              v-model="form.brokerName"
+              required
+            ></b-form-input>
           </b-form-group>
         </b-col>
         <b-col class="col-padding-margin-right">
@@ -164,26 +175,24 @@
         </b-col>
         <b-col md>
           <b-row>
-            <b-col  md class="image-position">
-              <span
-                style="text-align:center;"
-              >Account Holder</span>
+            <b-col md class="image-position">
+              <span style="text-align:center;">Account Holder</span>
 
               <div
                 class="image-input"
                 :style="{ 'background-image': `url(${imageData})` }"
                 @click="chooseImage"
               >
-              <div v-if="!imageData" id="preview">
-              <b-img
-              v-if="!imageData"
-                  :src="'http://localhost:8182/images/'
+                <div v-if="!imageData" id="preview">
+                  <b-img
+                    v-if="!imageData"
+                    :src="'http://localhost:8182/images/'
               +form.brokerNo+'.jpg'"
-                  thumbnail
-                  fluid
-                  alt="Fluid image"
-                ></b-img>
-              </div>
+                    thumbnail
+                    fluid
+                    alt="Fluid image"
+                  ></b-img>
+                </div>
                 <!-- <span v-if="!imageData" class="placeholder">Choose an Image</span> -->
                 <input class="file-input" ref="fileInput" type="file" @input="onSelectFile" />
               </div>
@@ -230,22 +239,13 @@
         </b-col>
       </b-row>
       <b-row>
-          <b-col md="2" class="col-padding-margin-right">
-          <label for="dow">Data Of Withdraw</label>
+        <b-col md="2" class="col-padding-margin-right">
+          <label for="dow">Data Of Creation</label>
           <b-input-group>
-            <b-form-input id="dow" v-model="form.dow" type="text" placeholder="YYYY-MM-DD"></b-form-input>
-            <b-input-group-append>
-              <b-form-datepicker
-                v-model="form.dow"
-                button-only
-                right
-                locale="en-US"
-                aria-controls="dob"
-              ></b-form-datepicker>
-            </b-input-group-append>
+            <b-form-input id="dow" disabled v-model="form.dow" type="text" placeholder="YYYY-MM-DD"></b-form-input>
           </b-input-group>
         </b-col>
-          <b-col md>
+        <b-col md>
           <b-form-group id="emailLbl" label="Email" label-for="email">
             <b-form-input id="email" v-model="form.email"></b-form-input>
           </b-form-group>
@@ -267,11 +267,6 @@
         </b-col>
       </b-row>
       <b-row>
-        <!-- <b-col md="2">
-          <b-form-group id="defaulterLbl" label="Defaulter" label-for="defaulter">
-            <b-form-checkbox id="defaulter" v-model="form.defaulter" switch variant="danger"></b-form-checkbox>
-          </b-form-group>
-        </b-col> -->
         <b-col md>
           <b-form-group id="areaLbl" label="Area" label-for="area">
             <b-form-input id="area" v-model="form.area"></b-form-input>
@@ -299,13 +294,40 @@
         </b-col>
       </b-row>
       <b-row bg-variant="light" style="position:sticky;bottom:0;padding-top:10px;">
-        <b-col md style="text-align: center !important">
+        <b-col md style="text-align: center !important" v-if="!form.defaulter">
+          <b-button
+            variant="danger text-center"
+            value="default"
+            @click="makeDefaulter"
+          >Make Defaulter</b-button>&nbsp;&nbsp;
           <b-button
             variant="primary text-center"
-            @click="createAccount"
-            value="Create"
-          >Create Account</b-button>&nbsp;&nbsp;
-          <b-button variant="danger text-center" value="Reset">Reset</b-button>
+            @click="updateBookingAccount"
+            value="Update"
+          >Update & GoTo Booking</b-button>&nbsp;&nbsp;
+          <b-button
+            variant="primary text-center"
+            @click="updateAccount"
+            value="Update"
+          >Update Account</b-button>&nbsp;&nbsp;
+          <b-button
+            variant="secondary text-center"
+            @click="$router.push({name: 'Account', params :{search: search}})"
+            value="back"
+          >Back To Search</b-button>
+        </b-col>
+        <b-col v-else md style="text-align: center !important">
+          <b-button
+            variant="success text-center"
+            v-if="$store.getters.isAdmin"
+            value="activate"
+            @click="activateDefaulter"
+          >Activate Account</b-button>&nbsp;&nbsp;
+          <b-button
+            variant="secondary text-center"
+            @click="$router.push({name: 'Account', params :{search: search}})"
+            value="back"
+          >Back To Search</b-button>
         </b-col>
       </b-row>
     </b-form>
@@ -389,25 +411,6 @@
         </b-row>
       </b-card>
     </b-modal>
-    <!-- <b-modal size="xl" centered id="modal-postal" ref="postalModal" hide-header hide-footer>
-      <b-card title="Postal Details">
-        <b-row>
-          <b-col>
-            <b-table
-              ref="selectablePostalTable"
-              id="PostalSearchResult"
-              selectable
-              select-mode="single"
-              :items="postalItems"
-              :fields="postalFields"
-              @row-dblclicked="onPostalRowSelected"
-              sticky-header="true"
-              responsive
-            ></b-table>
-          </b-col>
-        </b-row>
-      </b-card>
-    </b-modal>-->
   </b-card>
 </template>
 
@@ -416,9 +419,10 @@ import moment from "moment";
 export default {
   data() {
     return {
+      search: "",
       url: "",
       imageData: null,
-      custImage:null,
+      custImage: null,
       mainProps: {
         blank: true,
         blankColor: "#e0e0e0;",
@@ -463,7 +467,7 @@ export default {
         contact2PersonId: null,
         contact2Relation: null,
         createdBy: null,
-        updatedBy: null,
+        updatedBy: null
       },
       fields: [
         // { key: "selected", label: "Selected", sortable: false },
@@ -481,15 +485,6 @@ export default {
       contactPerson: null,
       contact1Person: false,
       contact2Person: false
-      //   postalFields: [
-      //     // { key: "selected", label: "Selected", sortable: false },
-      //     { key: "pincode", label: "Pin Code", sortable: false },
-      //     { key: "officeName", label: "Area", sortable: true },
-      //     { key: "taluk", label: "Town", sortable: true },
-      //     { key: "districtName", label: "District", sortable: false },
-      //     { key: "stateName", label: "State", sortable: false }
-      //   ],
-      //   postalItems: []
     };
   },
   methods: {
@@ -510,99 +505,12 @@ export default {
         this.$emit("input", files[0]);
       }
     },
-    nameCheck() {
-      let loader = this.$loading.show({
-        loader: "bars",
-        color: "green"
-      });
-      this.$http
-        .get(
-          "/middleware/api/secured/existing-broker-check/" +
-            this.form.brokerName.toUpperCase() +
-            "/" +
-            this.$store.state.selectedCompany.value
-        )
-        .then(response => {
-          loader.hide();
-          if (response.data) {
-            this.$bvModal
-              .msgBoxOk("Account Name Already Exists", {
-                title: "Name Validation",
-                size: "sm",
-                buttonSize: "sm",
-                okVariant: "danger",
-                headerClass: "p-2 border-bottom-0",
-                footerClass: "p-2 border-top-0",
-                centered: true
-              })
-              .then(value => {
-                if (value) {
-                  document.getElementById("brokerName").focus();
-                }
-              })
-              .catch(err => {
-                alert(err);
-              });
-          }
-        })
-        .catch(function(error) {
-          // handle error
-          alert(error);
-        })
-        .finally(function() {
-          // always executed
-        });
+    makeDefaulter() {
+      this.form.defaulter = true;
     },
-    // getPostal() {
-    //   let loader = this.$loading.show({
-    //     loader: "bars",
-    //     color: "green"
-    //   });
-    //   if (this.form.zipCode.length == 6 && !isNaN(this.form.zipCode)) {
-    //     this.$http
-    //       .get("/middleware/api/secured/get-postal/" + this.form.zipCode)
-    //       .then(response => {
-    //         this.postalItems = response.data;
-    //         loader.hide();
-    //         if (this.postalItems.length > 0) {
-    //           this.$bvModal.show("modal-postal");
-    //         }
-    //       })
-    //       .catch(function(error) {
-    //         // handle error
-    //         alert(error);
-    //       })
-    //       .finally(function() {
-    //         // always executed
-    //       });
-    //   } else {
-    //     loader.hide();
-    //     this.$bvModal
-    //       .msgBoxOk("Wrong Pin Code Entered", {
-    //         title: "Pin Code Validation",
-    //         size: "sm",
-    //         buttonSize: "sm",
-    //         okVariant: "danger",
-    //         headerClass: "p-2 border-bottom-0",
-    //         footerClass: "p-2 border-top-0",
-    //         centered: true
-    //       })
-    //       .then(value => {
-    //         if (value) {
-    //           document.getElementById("zipCode").focus();
-    //         }
-    //       })
-    //       .catch(err => {
-    //         alert(err);
-    //       });
-    //   }
-    // },
-    // onPostalRowSelected(item) {
-    //   this.$bvModal.hide("modal-postal");
-    //   this.form.town = item.taluk;
-    //   this.form.district = item.districtName;
-    //   this.form.area = item.officeName;
-    // },
+    activateDefaulter() {
+      this.form.defaulter = false;
+    },
     searchContact1Person() {
       this.contact1Person = true;
       this.contactPerson = this.form.contactPerson1;
@@ -661,61 +569,25 @@ export default {
     },
     onRowSelected(item) {
       this.$bvModal.hide("modal-contactPerson");
-      
-      if(this.contact1Person){
-      this.form.contactPerson1 = item.brokerName;
-      this.form.contact1PersonId = item.brokerNo;
-      this.form.contact1Mobile = item.mobileNo;
+
+      if (this.contact1Person) {
+        this.form.contactPerson1 = item.brokerName;
+        this.form.contact1PersonId = item.brokerNo;
+        this.form.contact1Mobile = item.mobileNo;
       }
-      if(this.contact2Person){
-      this.form.contactPerson2 = item.brokerName;
-      this.form.contact2PersonId = item.brokerNo;
-      this.form.contact2Mobile = item.mobileNo;
+      if (this.contact2Person) {
+        this.form.contactPerson2 = item.brokerName;
+        this.form.contact2PersonId = item.brokerNo;
+        this.form.contact2Mobile = item.mobileNo;
       }
-    },
-    getAccountCode() {
-      this.$http
-        .get(
-          "/middleware/api/secured/broker-account-code" +
-            "/" +
-            this.$store.state.selectedCompany.value
-        )
-        .then(response => {
-          this.form.brokerNo = response.data;
-        })
-        .catch(function(error) {
-          // handle error
-          alert(error);
-        })
-        .finally(function() {
-          // always executed
-        });
-    },
-    existingName() {
-      this.$http
-        .get(
-          "/middleware/api/secured/existing-broker-check" +
-            "/" +
-            this.$store.state.selectedCompany.value
-        )
-        .then(response => {
-          alert(response.data);
-        })
-        .catch(function(error) {
-          // handle error
-          alert(error);
-        })
-        .finally(function() {
-          // always executed
-        });
     },
     checkFormValidity() {
       const valid = this.$refs.form.checkValidity();
       this.nameState = valid;
       return valid;
     },
-    createAccount() {
-         if (!this.checkFormValidity()) {
+    updateAccount() {
+      if (!this.checkFormValidity()) {
         return;
       }
       let formData = new FormData();
@@ -724,11 +596,58 @@ export default {
       console.log(JSON.stringify(this.form));
       formData.append("form", JSON.stringify(this.form));
       formData.append("file", this.custImage[0]);
+      //   this.$http
+      //     .post("/middleware/api/secured/save-broker", formData)
+      //     .then(response => {
+      //       alert(response.data);
+      //       this.$router.push("/account")
+      //     })
+      //     .catch(function(error) {
+      //       // handle error
+      //       alert(error);
+      //     })
+      //     .finally(function() {
+      //       // always executed
+      //     });
+    },
+    getsSelectedAccount() {
+      let loader = this.$loading.show({
+        loader: "bars",
+        color: "green"
+      });
       this.$http
-        .post("/middleware/api/secured/save-broker", formData)
+        .get(
+          "/middleware/api/secured/get-broker/" +
+            this.form.brokerNo +
+            "/" +
+            this.$store.state.selectedCompany.value
+        )
         .then(response => {
-          alert(response.data);
-          this.$router.push("/account")
+          loader.hide();
+          if (response.data != null && response.data != "") {
+            response.data.dob = this.converteMongoToDate(response.data.dob);
+            response.data.dow = this.converteMongoToDate(response.data.dow);
+            //             if(response.data.dob != null && response.data.dob !== "")response.data.dob = moment(response.data.dob).format("YYYY-MM-DD");
+            // if(response.data.dow != null && response.data.dow !== "")response.data.dow = moment(response.data.dow).format("YYYY-MM-DD");
+            this.form = response.data;
+          } else {
+            this.$bvModal
+              .msgBoxOk("Please select proper user", {
+                title: "Wrong Information Provided",
+                size: "sm",
+                buttonSize: "sm",
+                okVariant: "danger",
+                headerClass: "p-2 border-bottom-0",
+                footerClass: "p-2 border-top-0",
+                centered: true
+              })
+              .then(value => {
+                if (value) this.$router.push("/account");
+              })
+              .catch(err => {
+                alert(err);
+              });
+          }
         })
         .catch(function(error) {
           // handle error
@@ -737,15 +656,25 @@ export default {
         .finally(function() {
           // always executed
         });
+    },
+    converteMongoToDate(dateObject) {
+      //{  "month": "AUGUST",  "year": 1960,  "dayOfMonth": 5,  "hour": 5,  "minute": 30,  "second": 0}
+      if (dateObject != null) {
+        var newDate = moment.utc();
+        newDate.set("year", dateObject.year);
+        newDate.set("month", dateObject.month);
+        newDate.set("date", dateObject.dayOfMonth);
+        newDate.startOf("day");
+        return newDate.format("YYYY-MM-DD");
+      }
+      return null;
     }
   },
   mounted() {
     this.occupationOptions = this.$store.state.master.typeOfOccupation;
     this.contactRelationOptions = this.$store.state.master.typeOfRelation;
     this.form.companyCode = this.$store.state.selectedCompany.value;
-    if(this.form.dob != null && this.form.dob !== "")this.form.dob = moment(this.form.dob).format("YYYY-MM-DD");
-    if(this.form.dow != null && this.form.dow !== "")this.form.dow = moment(this.form.dow).format("YYYY-MM-DD");
-    //this.getAccountCode();
+    this.getsSelectedAccount();
   },
   computed: {
     dob() {
@@ -760,9 +689,9 @@ export default {
       this.form.age = diff;
     }
   },
-  created(){
-      debugger;
-    this.form.brokerNo = this.$route.params.brokerNo
+  created() {
+    this.form.brokerNo = this.$route.params.brokerNo;
+    this.search = this.$route.params.search;
   }
 };
 </script>
@@ -807,7 +736,7 @@ export default {
 .col-padding-margin-right {
   padding: 0px;
   margin-right: 6px;
-   margin-top: 6px;
+  margin-top: 6px;
 }
 .card {
   background-color: azure;

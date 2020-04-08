@@ -36,9 +36,10 @@ const routes = [{
         }
     },
     {
-        path: '/updateAccount/:brokerNo',
+        path: '/updateAccount/',
         name: 'UpdateAccount',
         component: UpdateAccount,
+        props: true,
         meta: {
             requiresAuth: true
         }

@@ -1,10 +1,10 @@
 <template>
   <b-card>
-      <b-row>
-          <b-col>
-          <span class="my-card-heading">Account Creation</span>
-          </b-col>
-      </b-row>
+    <b-row>
+      <b-col>
+        <span class="my-card-heading">Create Account</span>
+      </b-col>
+    </b-row>
     <b-form ref="form" @submit.stop.prevent>
       <b-row>
         <b-col md="1" class="col-padding-margin-right">
@@ -13,9 +13,20 @@
           </b-form-group>
         </b-col>
         <b-col md="3" class="col-padding-margin-right">
-          <b-form-group id="brokerNameLbl" label="Name" :state="nameState"
-                invalid-feedback="Name is Required" label-for="brokerName">
-            <b-form-input id="brokerName" @keypress="checkFormValidity" :state="nameState" v-model="form.brokerName" required></b-form-input>
+          <b-form-group
+            id="brokerNameLbl"
+            label="Name"
+            :state="nameState"
+            invalid-feedback="Name is Required"
+            label-for="brokerName"
+          >
+            <b-form-input
+              id="brokerName"
+              @keypress="checkFormValidity"
+              :state="nameState"
+              v-model="form.brokerName"
+              required
+            ></b-form-input>
           </b-form-group>
         </b-col>
         <b-col class="col-padding-margin-right">
@@ -164,10 +175,8 @@
         </b-col>
         <b-col md>
           <b-row>
-            <b-col  md class="image-position">
-              <span
-                style="text-align:center;"
-              >Account Holder</span>
+            <b-col md class="image-position">
+              <span style="text-align:center;">Account Holder</span>
 
               <div
                 class="image-input"
@@ -220,11 +229,11 @@
         </b-col>
       </b-row>
       <b-row>
-          <b-col md="2" class="col-padding-margin-right">
-          <label for="dow">Data Of Withdraw</label>
+        <b-col md="2" class="col-padding-margin-right">
+          <label for="dow">Date Of Creation</label>
           <b-input-group>
-            <b-form-input id="dow" v-model="form.dow" type="text" placeholder="YYYY-MM-DD"></b-form-input>
-            <b-input-group-append>
+            <b-form-input id="dow" disabled v-model="form.dow" type="text" placeholder="YYYY-MM-DD"></b-form-input>
+            <!-- <b-input-group-append>
               <b-form-datepicker
                 v-model="form.dow"
                 button-only
@@ -232,10 +241,10 @@
                 locale="en-US"
                 aria-controls="dob"
               ></b-form-datepicker>
-            </b-input-group-append>
+            </b-input-group-append> -->
           </b-input-group>
         </b-col>
-          <b-col md>
+        <b-col md>
           <b-form-group id="emailLbl" label="Email" label-for="email">
             <b-form-input id="email" v-model="form.email"></b-form-input>
           </b-form-group>
@@ -261,7 +270,7 @@
           <b-form-group id="defaulterLbl" label="Defaulter" label-for="defaulter">
             <b-form-checkbox id="defaulter" v-model="form.defaulter" switch variant="danger"></b-form-checkbox>
           </b-form-group>
-        </b-col> -->
+        </b-col>-->
         <b-col md>
           <b-form-group id="areaLbl" label="Area" label-for="area">
             <b-form-input id="area" v-model="form.area"></b-form-input>
@@ -295,7 +304,8 @@
             @click="createAccount"
             value="Create"
           >Create Account</b-button>&nbsp;&nbsp;
-          <b-button variant="danger text-center" value="Reset">Reset</b-button>
+          <b-button variant="danger text-center"  @click="reload" value="Reset">Reset</b-button>&nbsp;&nbsp;
+          <b-button variant="secondary text-center" @click="$router.go(-1)" value="back">Back To Search</b-button>
         </b-col>
       </b-row>
     </b-form>
@@ -408,7 +418,7 @@ export default {
     return {
       url: "",
       imageData: null,
-      custImage:null,
+      custImage: null,
       mainProps: {
         blank: true,
         blankColor: "#e0e0e0;",
@@ -422,38 +432,38 @@ export default {
       nameState: null,
       form: {
         companyCode: null,
-        brokerNo: "GP-238",
-        brokerName: "ABDULLA . SK ; S/ ABDULSATTAR",
+        brokerNo: null,
+        brokerName: null,
         aadharNo: null,
-        addr1: "S/ ABDULSATTAR",
-        addr2: "9-29[N]",
-        addr3: "IND-2",
-        town: "YANAMALAKUDURU",
+        addr1: null,
+        addr2: null,
+        addr3: null,
+        town: null,
         district: "KRISHNA",
         area: null,
         zipCode: null,
-        otherPhones1: "9908366417 [MUNAF]",
-        otherPhones2: "8885188786",
-        mobileNo: "7306177595",
+        otherPhones1: null,
+        otherPhones2: null,
+        mobileNo: null,
         email: null,
-        dob: "1960-08-05T00:00:00.000",
-        dow: "2014-08-05T00:00:00.000",
-        occupation: "TINKARING",
+        dob: null,
+        dow: null,
+        occupation: null,
         age: 55,
         gender: "MALE",
         remarks: null,
-        ownrent: true,
+        ownrent: false,
         defaulter: false,
-        contactPerson1: "Nill",
+        contactPerson1: null,
         contact1Mobile: null,
         contact1PersonId: null,
-        contact1Relation: "NILL",
+        contact1Relation: null,
         contactPerson2: null,
         contact2Mobile: null,
         contact2PersonId: null,
         contact2Relation: null,
         createdBy: null,
-        updatedBy: null,
+        updatedBy: null
       },
       fields: [
         // { key: "selected", label: "Selected", sortable: false },
@@ -486,7 +496,6 @@ export default {
     chooseImage() {
       this.$refs.fileInput.click();
     },
-
     onSelectFile() {
       const input = this.$refs.fileInput;
       const files = input.files;
@@ -499,6 +508,9 @@ export default {
         reader.readAsDataURL(files[0]);
         this.$emit("input", files[0]);
       }
+    },
+    reload(){
+window.location.reload(true);
     },
     nameCheck() {
       let loader = this.$loading.show({
@@ -651,16 +663,16 @@ export default {
     },
     onRowSelected(item) {
       this.$bvModal.hide("modal-contactPerson");
-      
-      if(this.contact1Person){
-      this.form.contactPerson1 = item.brokerName;
-      this.form.contact1PersonId = item.brokerNo;
-      this.form.contact1Mobile = item.mobileNo;
+
+      if (this.contact1Person) {
+        this.form.contactPerson1 = item.brokerName;
+        this.form.contact1PersonId = item.brokerNo;
+        this.form.contact1Mobile = item.mobileNo;
       }
-      if(this.contact2Person){
-      this.form.contactPerson2 = item.brokerName;
-      this.form.contact2PersonId = item.brokerNo;
-      this.form.contact2Mobile = item.mobileNo;
+      if (this.contact2Person) {
+        this.form.contactPerson2 = item.brokerName;
+        this.form.contact2PersonId = item.brokerNo;
+        this.form.contact2Mobile = item.mobileNo;
       }
     },
     getAccountCode() {
@@ -705,7 +717,7 @@ export default {
       return valid;
     },
     createAccount() {
-         if (!this.checkFormValidity()) {
+      if (!this.checkFormValidity()) {
         return;
       }
       let formData = new FormData();
@@ -714,18 +726,52 @@ export default {
       console.log(JSON.stringify(this.form));
       formData.append("form", JSON.stringify(this.form));
       formData.append("file", this.custImage[0]);
-      this.$http
-        .post("/middleware/api/secured/save-broker", formData)
-        .then(response => {
-          alert(response.data);
-          this.$router.push("/account")
+      this.$bvModal
+        .msgBoxConfirm("Please confirm that you want to Create New Account.", {
+          title: "Confirmation",
+          size: "sm",
+          buttonSize: "sm",
+          okVariant: "primary",
+          cancelVariant: "danger",
+          okTitle: "Proceed...",
+          cancelTitle: "Cancel",
+          footerClass: "p-2",
+          hideHeaderClose: false,
+          centered: true
         })
-        .catch(function(error) {
-          // handle error
-          alert(error);
+        .then(value => {
+          if (value) {
+            this.$http
+              .post("/middleware/api/secured/save-broker", formData)
+              .then(() => {
+                this.$bvModal
+                  .msgBoxOk("Updated Master Data", {
+                    title: "Confirmation",
+                    size: "sm",
+                    buttonSize: "sm",
+                    okVariant: "info",
+                    headerClass: "p-2 border-bottom-0",
+                    footerClass: "p-2 border-top-0",
+                    centered: true
+                  })
+                  .then(value => {
+                    if (value) this.$router.push("/account");
+                  })
+                  .catch(err => {
+                    alert(err);
+                  });
+              })
+              .catch(function(error) {
+                // handle error
+                alert(error);
+              })
+              .finally(function() {
+                // always executed
+              });
+          }
         })
-        .finally(function() {
-          // always executed
+        .catch(err => {
+          alert(err);
         });
     }
   },
@@ -733,8 +779,7 @@ export default {
     this.occupationOptions = this.$store.state.master.typeOfOccupation;
     this.contactRelationOptions = this.$store.state.master.typeOfRelation;
     this.form.companyCode = this.$store.state.selectedCompany.value;
-    if(this.form.dob != null && this.form.dob !== "")this.form.dob = moment(this.form.dob).format("YYYY-MM-DD");
-    if(this.form.dow != null && this.form.dow !== "")this.form.dow = moment(this.form.dow).format("YYYY-MM-DD");
+      this.form.dow = moment().format("YYYY-MM-DD");
     this.getAccountCode();
   },
   computed: {
@@ -793,7 +838,7 @@ export default {
 .col-padding-margin-right {
   padding: 0px;
   margin-right: 6px;
-   margin-top: 6px;
+  margin-top: 6px;
 }
 .card {
   background-color: azure;
