@@ -213,10 +213,14 @@ export default {
         loader: "dots",
         color: "green"
       });
+      let contactName = this.accountSearch.toUpperCase();
+       contactName = contactName.replace(/\//g, '+');
       this.$http
         .get(
           "/middleware/api/secured/get-broker-Lst/" +
-            this.accountSearch.toUpperCase()+'/'+this.$store.state.selectedCompany.value
+            encodeURIComponent(contactName.toUpperCase())+
+            "/" +
+            this.$store.state.selectedCompany.value
         )
         .then(response => {
              /*response.data.forEach(function(account){ 

@@ -298,6 +298,7 @@
           <b-button
             variant="danger text-center"
             value="default"
+            v-if="$store.getters.isAdmin"
             @click="makeDefaulter"
           >Make Defaulter</b-button>&nbsp;&nbsp;
           <b-button
@@ -506,10 +507,129 @@ export default {
       }
     },
     makeDefaulter() {
-      this.form.defaulter = true;
+      let formData = new FormData();
+      formData.append("brokerNo", this.form.brokerNo);
+      formData.append("compCode", this.form.companyCode);
+      formData.append("updatedBy", this.$store.state.user.username);
+      formData.append("status", true);
+      this.$bvModal
+        .msgBoxConfirm(
+          "Please confirm that you want to Make Defaulter Account.",
+          {
+            title: "Confirmation",
+            size: "sm",
+            buttonSize: "sm",
+            okVariant: "primary",
+            cancelVariant: "danger",
+            okTitle: "Proceed...",
+            cancelTitle: "Cancel",
+            footerClass: "p-2",
+            hideHeaderClose: false,
+            centered: true
+          }
+        )
+        .then(value => {
+          if (value) {
+            let loader = this.$loading.show({
+              loader: "dots",
+              color: "red"
+            });
+            this.$http
+              .post("/middleware/api/secured/update-broker-status", formData)
+              .then(() => {
+                loader.hide();
+                this.$bvModal
+                  .msgBoxOk("Defaulted Successfully", {
+                    title: "Confirmation",
+                    size: "sm",
+                    buttonSize: "sm",
+                    okVariant: "info",
+                    headerClass: "p-2 border-bottom-0",
+                    footerClass: "p-2 border-top-0",
+                    centered: true
+                  })
+                  .then(value => {
+                    if (value) {
+                      this.getsSelectedAccount();
+                    }
+                  })
+                  .catch(err => {
+                    alert(err);
+                  });
+              })
+              .catch(function(error) {
+                // handle error
+                alert(error);
+              })
+              .finally(function() {
+                // always executed
+              });
+          }
+        })
+        .catch(err => {
+          alert(err);
+        });
     },
     activateDefaulter() {
-      this.form.defaulter = false;
+      let formData = new FormData();
+      formData.append("brokerNo", this.form.brokerNo);
+      formData.append("compCode", this.form.companyCode);
+      formData.append("updatedBy", this.$store.state.user.username);
+      formData.append("status", false);
+      this.$bvModal
+        .msgBoxConfirm("Please confirm that you want to Activate Account.", {
+          title: "Confirmation",
+          size: "sm",
+          buttonSize: "sm",
+          okVariant: "primary",
+          cancelVariant: "danger",
+          okTitle: "Proceed...",
+          cancelTitle: "Cancel",
+          footerClass: "p-2",
+          hideHeaderClose: false,
+          centered: true
+        })
+        .then(value => {
+          if (value) {
+            let loader = this.$loading.show({
+              loader: "dots",
+              color: "green"
+            });
+            this.$http
+              .post("/middleware/api/secured/update-broker-status", formData)
+              .then(() => {
+                loader.hide();
+                this.$bvModal
+                  .msgBoxOk("Activated Successfully", {
+                    title: "Confirmation",
+                    size: "sm",
+                    buttonSize: "sm",
+                    okVariant: "info",
+                    headerClass: "p-2 border-bottom-0",
+                    footerClass: "p-2 border-top-0",
+                    centered: true
+                  })
+                  .then(value => {
+                    if (value) {
+                      this.getsSelectedAccount();
+                    }
+                  })
+                  .catch(err => {
+                    alert(err);
+                  });
+              })
+              .catch(function(error) {
+                // handle error
+                alert(error);
+              })
+              .finally(function() {
+                // always executed
+              });
+          }
+        })
+        .catch(err => {
+          alert(err);
+        });
     },
     searchContact1Person() {
       this.contact1Person = true;
@@ -524,10 +644,12 @@ export default {
       this.showContactModal();
     },
     searchContactPerson() {
+        let contactName = this.contactPerson.toUpperCase();
+       contactName = contactName.replace(/\//g, '+');
       this.$http
         .get(
           "/middleware/api/secured/get-broker-Lst/" +
-            this.contactPerson.toUpperCase() +
+            encodeURIComponent(contactName.toUpperCase()) +
             "/" +
             this.$store.state.selectedCompany.value
         )
@@ -547,10 +669,12 @@ export default {
         loader: "bars",
         color: "green"
       });
+      let contactName = this.contactPerson.toUpperCase();
+       contactName = contactName.replace(/\//g, '+');
       this.$http
         .get(
           "/middleware/api/secured/get-broker-Lst/" +
-            this.contactPerson.toUpperCase() +
+            encodeURIComponent(contactName.toUpperCase()) +
             "/" +
             this.$store.state.selectedCompany.value
         )
@@ -586,29 +710,74 @@ export default {
       this.nameState = valid;
       return valid;
     },
+    updateBookingAccount(){
+
+    },
     updateAccount() {
       if (!this.checkFormValidity()) {
         return;
       }
       let formData = new FormData();
-      this.form.createdBy = this.$store.state.user.username;
       this.form.updatedBy = this.$store.state.user.username;
       console.log(JSON.stringify(this.form));
       formData.append("form", JSON.stringify(this.form));
-      formData.append("file", this.custImage[0]);
-      //   this.$http
-      //     .post("/middleware/api/secured/save-broker", formData)
-      //     .then(response => {
-      //       alert(response.data);
-      //       this.$router.push("/account")
-      //     })
-      //     .catch(function(error) {
-      //       // handle error
-      //       alert(error);
-      //     })
-      //     .finally(function() {
-      //       // always executed
-      //     });
+      if(this.custImage !=null && this.custImage.length>0){
+          formData.append("file", this.custImage[0]);
+      }else{
+          formData.append("file", null);
+      }
+      this.$bvModal
+        .msgBoxConfirm("Please confirm that you want to Update Account.", {
+          title: "Confirmation",
+          size: "sm",
+          buttonSize: "sm",
+          okVariant: "primary",
+          cancelVariant: "danger",
+          okTitle: "Proceed...",
+          cancelTitle: "Cancel",
+          footerClass: "p-2",
+          hideHeaderClose: false,
+          centered: true
+        })
+        .then(value => {
+          if (value) {
+            let loader = this.$loading.show({
+              loader: "dots",
+              color: "green"
+            });
+            this.$http
+              .post("/middleware/api/secured/update-broker", formData)
+              .then(() => {
+                loader.hide();
+                this.$bvModal
+                  .msgBoxOk("Updated Account", {
+                    title: "Confirmation",
+                    size: "sm",
+                    buttonSize: "sm",
+                    okVariant: "info",
+                    headerClass: "p-2 border-bottom-0",
+                    footerClass: "p-2 border-top-0",
+                    centered: true
+                  })
+                  .then(value => {
+                    if (value) this.getsSelectedAccount();
+                  })
+                  .catch(err => {
+                    alert(err);
+                  });
+              })
+              .catch(function(error) {
+                // handle error
+                alert(error);
+              })
+              .finally(function() {
+                // always executed
+              });
+          }
+        })
+        .catch(err => {
+          alert(err);
+        });
     },
     getsSelectedAccount() {
       let loader = this.$loading.show({
@@ -627,6 +796,8 @@ export default {
           if (response.data != null && response.data != "") {
             response.data.dob = this.converteMongoToDate(response.data.dob);
             response.data.dow = this.converteMongoToDate(response.data.dow);
+            response.data.createdDt = null;
+            response.data.updatedDt = null;
             //             if(response.data.dob != null && response.data.dob !== "")response.data.dob = moment(response.data.dob).format("YYYY-MM-DD");
             // if(response.data.dow != null && response.data.dow !== "")response.data.dow = moment(response.data.dow).format("YYYY-MM-DD");
             this.form = response.data;

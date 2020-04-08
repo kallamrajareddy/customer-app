@@ -241,7 +241,7 @@
                 locale="en-US"
                 aria-controls="dob"
               ></b-form-datepicker>
-            </b-input-group-append> -->
+            </b-input-group-append>-->
           </b-input-group>
         </b-col>
         <b-col md>
@@ -304,8 +304,12 @@
             @click="createAccount"
             value="Create"
           >Create Account</b-button>&nbsp;&nbsp;
-          <b-button variant="danger text-center"  @click="reload" value="Reset">Reset</b-button>&nbsp;&nbsp;
-          <b-button variant="secondary text-center" @click="$router.go(-1)" value="back">Back To Search</b-button>
+          <b-button variant="danger text-center" @click="reload" value="Reset">Reset</b-button>&nbsp;&nbsp;
+          <b-button
+            variant="secondary text-center"
+            @click="$router.go(-1)"
+            value="back"
+          >Back To Search</b-button>
         </b-col>
       </b-row>
     </b-form>
@@ -509,8 +513,8 @@ export default {
         this.$emit("input", files[0]);
       }
     },
-    reload(){
-window.location.reload(true);
+    reload() {
+      window.location.reload(true);
     },
     nameCheck() {
       let loader = this.$loading.show({
@@ -618,10 +622,12 @@ window.location.reload(true);
       this.showContactModal();
     },
     searchContactPerson() {
+      let contactName = this.contactPerson.toUpperCase();
+       contactName = contactName.replace(/\//g, '+');
       this.$http
         .get(
           "/middleware/api/secured/get-broker-Lst/" +
-            this.contactPerson.toUpperCase() +
+            encodeURIComponent(contactName.toUpperCase())+
             "/" +
             this.$store.state.selectedCompany.value
         )
@@ -641,10 +647,12 @@ window.location.reload(true);
         loader: "bars",
         color: "green"
       });
+      let contactName = this.contactPerson.toUpperCase();
+       contactName = contactName.replace(/\//g, '+');
       this.$http
         .get(
           "/middleware/api/secured/get-broker-Lst/" +
-            this.contactPerson.toUpperCase() +
+            encodeURIComponent(contactName.toUpperCase()) +
             "/" +
             this.$store.state.selectedCompany.value
         )
@@ -741,11 +749,16 @@ window.location.reload(true);
         })
         .then(value => {
           if (value) {
+            let loader = this.$loading.show({
+              loader: "dots",
+              color: "green"
+            });
             this.$http
               .post("/middleware/api/secured/save-broker", formData)
               .then(() => {
+                loader.hide();
                 this.$bvModal
-                  .msgBoxOk("Updated Master Data", {
+                  .msgBoxOk("Created Account", {
                     title: "Confirmation",
                     size: "sm",
                     buttonSize: "sm",
@@ -779,7 +792,7 @@ window.location.reload(true);
     this.occupationOptions = this.$store.state.master.typeOfOccupation;
     this.contactRelationOptions = this.$store.state.master.typeOfRelation;
     this.form.companyCode = this.$store.state.selectedCompany.value;
-      this.form.dow = moment().format("YYYY-MM-DD");
+    this.form.dow = moment().format("YYYY-MM-DD");
     this.getAccountCode();
   },
   computed: {
