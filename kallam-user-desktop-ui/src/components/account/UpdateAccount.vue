@@ -312,6 +312,11 @@
             value="Update"
           >Update Account</b-button>&nbsp;&nbsp;
           <b-button
+            variant="primary text-center"
+            @click="print"
+            value="Update"
+          >Print</b-button>&nbsp;&nbsp;
+          <b-button
             variant="secondary text-center"
             @click="$router.push({name: 'Account', params :{search: search}})"
             value="back"
@@ -489,6 +494,9 @@ export default {
     };
   },
   methods: {
+      print(){
+          window.print();
+      },
     chooseImage() {
       this.$refs.fileInput.click();
     },
@@ -696,11 +704,17 @@ export default {
 
       if (this.contact1Person) {
         this.form.contactPerson1 = item.brokerName;
+        if(this.form.contact1PersonId !== item.brokerNo){
+            this.form.contact1Relation = null;
+        }
         this.form.contact1PersonId = item.brokerNo;
         this.form.contact1Mobile = item.mobileNo;
       }
       if (this.contact2Person) {
         this.form.contactPerson2 = item.brokerName;
+        if(this.form.contact2PersonId !== item.brokerNo){
+            this.form.contact2PersonId = null;
+        }
         this.form.contact2PersonId = item.brokerNo;
         this.form.contact2Mobile = item.mobileNo;
       }
@@ -798,6 +812,7 @@ export default {
             response.data.dow = this.converteMongoToDate(response.data.dow);
             response.data.createdDt = null;
             response.data.updatedDt = null;
+            response.data.bookings = null;
             //             if(response.data.dob != null && response.data.dob !== "")response.data.dob = moment(response.data.dob).format("YYYY-MM-DD");
             // if(response.data.dow != null && response.data.dow !== "")response.data.dow = moment(response.data.dow).format("YYYY-MM-DD");
             this.form = response.data;

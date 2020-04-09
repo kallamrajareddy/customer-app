@@ -8,6 +8,7 @@ import CreateAccount from '@/components/account/CreateAccount'
 import UpdateAccount from '@/components/account/UpdateAccount'
 import Booking from '@/components/bookings/Booking'
 import store from '@/store/store'
+// import axios from 'axios'
 
 Vue.use(VueRouter)
 
@@ -86,6 +87,7 @@ const router = new VueRouter({
     routes
 })
 
+
 router.beforeEach((to, from, next) => {
     if (to.matched.some(record => record.meta.requiresAuth)) {
         if (store.getters.isLoggedIn) {
@@ -97,6 +99,44 @@ router.beforeEach((to, from, next) => {
         next()
     }
 })
+
+
+// axios.interceptors.response.use(
+//     (response) => {
+//         if (response.data.error != undefined && response.data.error != '') {
+//             store.dispatch('logout').then(() => {
+//                 router.push({ name: 'Home' })
+//             }).catch(() => {
+//                 router.push({ name: 'Home' })
+//             })
+
+//         }
+//         return response
+//     },
+//     (error) => {
+//         const originalRequest = error.config
+//             // token expired
+//         if (error.response.status === 401 && error.response.data.error == "token_expired") {
+//             originalRequest._retry = true
+//             store.dispatch('refreshToken').then((response) => {
+//                 // console.log(response)
+//                 let token = response.data.token
+//                 let headerAuth = 'Bearer ' + response.data.token
+//                 store.dispatch('saveToken', token)
+//                 axios.defaults.headers['Authorization'] = headerAuth
+//                 originalRequest.headers['Authorization'] = headerAuth
+//                 return axios(originalRequest)
+//             }).catch(() => {
+//                 store.dispatch('logout').then(() => {
+//                     router.push({ name: 'login' })
+//                 }).catch(() => {
+//                     router.push({ name: 'login' })
+//                 })
+//             })
+//         }
+//         return Promise.reject(error)
+//     }
+// )
 
 
 export default router

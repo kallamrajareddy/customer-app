@@ -2,7 +2,7 @@
   <b-card>
        <b-row>
           <b-col>
-          <span class="my-card-heading">Account Create/Update</span>
+          <span class="my-card-heading">Account Search</span>
           </b-col>
       </b-row>
     <b-row>

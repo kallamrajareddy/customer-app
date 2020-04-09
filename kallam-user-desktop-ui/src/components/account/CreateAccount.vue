@@ -674,11 +674,17 @@ export default {
 
       if (this.contact1Person) {
         this.form.contactPerson1 = item.brokerName;
+        if(this.form.contact1PersonId !== item.brokerNo){
+            this.form.contact1Relation = null;
+        }
         this.form.contact1PersonId = item.brokerNo;
         this.form.contact1Mobile = item.mobileNo;
       }
       if (this.contact2Person) {
         this.form.contactPerson2 = item.brokerName;
+        if(this.form.contact2PersonId !== item.brokerNo){
+            this.form.contact2PersonId = null;
+        }
         this.form.contact2PersonId = item.brokerNo;
         this.form.contact2Mobile = item.mobileNo;
       }

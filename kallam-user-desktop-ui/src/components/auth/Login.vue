@@ -140,11 +140,26 @@ export default {
                     this.$router.push("/account");
                   }
                 })
-                .catch(err => alert(err));
+                .catch(err => {
+                  alert(err);
+                  this.email = "";
+                  this.password = "";
+                  loader.hide();
+                });
             })
-            .catch(err => alert(err));
+            .catch(err => {
+              alert(err);
+              this.email = "";
+              this.password = "";
+              loader.hide();
+            });
         })
-        .catch(err => alert(err));
+        .catch(err => {
+          alert(err);
+          this.email = "";
+          this.password = "";
+          loader.hide();
+        });
     }
   }
 };

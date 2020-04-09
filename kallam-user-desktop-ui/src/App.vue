@@ -25,7 +25,7 @@
             <template v-slot:button-content>
               <b-icon icon="briefcase"></b-icon>Transactions
             </template>
-            <b-dropdown-item-button>Bookings</b-dropdown-item-button>
+            <b-dropdown-item-button @click="$router.push('/bookings')">Bookings</b-dropdown-item-button>
             <b-dropdown-divider></b-dropdown-divider>
             <b-dropdown-item-button>Recipts</b-dropdown-item-button>
             <b-dropdown-divider></b-dropdown-divider>
