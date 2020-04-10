@@ -7,6 +7,7 @@ import Account from '@/components/account/Account'
 import CreateAccount from '@/components/account/CreateAccount'
 import UpdateAccount from '@/components/account/UpdateAccount'
 import Booking from '@/components/bookings/Booking'
+import BookingsView from '@/components/bookings/BookingsView'
 import store from '@/store/store'
 // import axios from 'axios'
 
@@ -57,6 +58,14 @@ const routes = [{
         path: '/bookings',
         name: 'Bookings',
         component: Booking,
+        meta: {
+            requiresAuth: true
+        }
+    },
+    {
+        path: '/bookings-view',
+        name: 'BookingsView',
+        component: BookingsView,
         meta: {
             requiresAuth: true
         }

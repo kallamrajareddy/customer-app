@@ -27,9 +27,9 @@
             </template>
             <b-dropdown-item-button @click="$router.push('/bookings')">Bookings</b-dropdown-item-button>
             <b-dropdown-divider></b-dropdown-divider>
-            <b-dropdown-item-button>Recipts</b-dropdown-item-button>
+            <b-dropdown-item-button @click="$router.push('/bookings-view')">Booking Details</b-dropdown-item-button>
             <b-dropdown-divider></b-dropdown-divider>
-            <b-dropdown-item-button>Booking Details</b-dropdown-item-button>
+            <b-dropdown-item-button>Recipts</b-dropdown-item-button>
           </b-dropdown>
 
           <!-- <b-nav-form>
@@ -151,7 +151,13 @@ export default {
     overflow-y: auto;
     max-height: 400px !important;
 }
-
+.image-position {
+  max-height: 200px;
+  padding: 0px;
+  max-width: 200px;
+  margin-right: 5px;
+  margin-top: 6px;
+}
 /* #preview {
   display: flex;
   justify-content: center;

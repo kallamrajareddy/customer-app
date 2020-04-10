@@ -2,7 +2,7 @@
   <b-card>
     <b-row>
       <b-col>
-        <span class="my-card-heading">Create Account</span>
+        <span class="my-card-heading">CREATE ACCOUNT</span>
       </b-col>
     </b-row>
     <b-form ref="form" @submit.stop.prevent>

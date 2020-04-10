@@ -2,7 +2,7 @@
   <b-card>
        <b-row>
           <b-col>
-          <span class="my-card-heading">Bookings Search</span>
+          <span class="my-card-heading">BOOKINGS SEARCH</span>
           </b-col>
       </b-row>
     <b-row>
@@ -39,7 +39,7 @@
         <b-card>
         <b-row>
             <b-col md="3" style="max-width: 260px;">
-             <b-card-title style="text-align: left; width:260px ">Accounts Found ({{totalRows}})</b-card-title>
+             <b-card-title style="text-align: left; width:260px ">Booking Found ({{totalRows}})</b-card-title>
             </b-col>
             <b-col md="3">
 <b-form-input
@@ -50,29 +50,29 @@
           style="margin-right:10px;display: inline-flex;"
         ></b-form-input>
             </b-col>
-            <!-- <b-col md="6" style="padding-right: 0px;">
+            <b-col md="6" style="padding-right: 0px;">
                
                 <b-button
                style="float:right;"
                 variant="primary"
                 :disabled="selected == ''"
-                @click="editAccount"
+                @click="editBookings"
               >
                 <b-icon icon="pencil" aria-hidden="true"></b-icon>
-                <span class="sr-only">pencil</span>Edit Account
+                <span class="sr-only">pencil</span>Edit Bookings
               </b-button>
               <b-button
                style="float:right; margin-right:4px"
-                variant="primary" @click="$router.push('/createAccount')"
-              >Create Account
+                variant="primary" @click="$router.push('/createBooking')"
+              >Create Booking
               </b-button>
                <b-button
                style="float:right; margin-right:4px"
                :disabled="selected == ''"
                 variant="primary" 
-              >GoTo Booking
+              >GoTo Account
               </b-button>
-            </b-col> -->
+            </b-col>
             </b-row>
          
               
@@ -211,9 +211,9 @@ export default {
     };
   },
   methods: {
-      editAccount(){
+      editBookings(){
           let brokerNo = this.selected[0].brokerNo;
-          this.$router.push({name: "UpdateAccount", params :{brokerNo: brokerNo, search: this.accountSearch}})
+          this.$router.push({name: "BookingsView", params :{brokerNo: brokerNo, search: this.accountSearch}})
       },
     onRowSelected(item) {
       this.selected = item;

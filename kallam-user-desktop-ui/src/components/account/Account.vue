@@ -2,7 +2,7 @@
   <b-card>
        <b-row>
           <b-col>
-          <span class="my-card-heading">Account Search</span>
+          <span class="my-card-heading">ACCOUNT SEARCH</span>
           </b-col>
       </b-row>
     <b-row>
@@ -69,6 +69,7 @@
                <b-button
                style="float:right; margin-right:4px"
                :disabled="selected == ''"
+               @click="editBookings"
                 variant="primary" 
               >GoTo Booking
               </b-button>
@@ -192,6 +193,10 @@ export default {
     };
   },
   methods: {
+    editBookings(){
+          let brokerNo = this.selected[0].brokerNo;
+          this.$router.push({name: "BookingsView", params :{brokerNo: brokerNo, search: this.accountSearch}})
+      },
       editAccount(){
           let brokerNo = this.selected[0].brokerNo;
           this.$router.push({name: "UpdateAccount", params :{brokerNo: brokerNo, search: this.accountSearch}})

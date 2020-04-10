@@ -2,7 +2,7 @@
   <b-card :style="{'background-color': (form.defaulter)?'red':'azure'}">
     <b-row>
       <b-col>
-        <span class="my-card-heading">Update Account</span>
+        <span class="my-card-heading">UPDATE ACCOUNT</span>
       </b-col>
     </b-row>
     <b-form ref="form" @submit.stop.prevent>
@@ -22,7 +22,6 @@
           >
             <b-form-input
               id="brokerName"
-              @keypress="checkFormValidity"
               :state="nameState"
               v-model="form.brokerName"
               required
