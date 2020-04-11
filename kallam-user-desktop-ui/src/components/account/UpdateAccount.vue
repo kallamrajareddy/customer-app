@@ -288,7 +288,7 @@
         </b-col>
         <b-col md>
           <b-form-group id="remarksLbl" label="Remarks" label-for="remarks" style="color: red;">
-            <b-form-input id="remarks" v-model="form.remarks" rows="3" max-rows="6"></b-form-input>
+            <b-form-textarea id="remarks" v-model="form.remarks" rows="3" max-rows="6"></b-form-textarea>
           </b-form-group>
         </b-col>
       </b-row>

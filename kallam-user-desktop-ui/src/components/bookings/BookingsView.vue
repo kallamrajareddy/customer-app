@@ -117,7 +117,46 @@
             <i>custom</i>-->
             <span style="color: #28a745;">
               ACTIVE
-              (<strong style="color:#007bff">{{form.activeBookings.length}}</strong>)
+              (<strong style="color:#007bff">{{form.runningAccounts.length}}</strong>)
+            </span>
+          </template>
+          <b-table
+            sticky-header="true"
+            responsive
+            selectable
+            :fields="fields"
+            :items="form.runningAccounts"
+          >
+          <template v-slot:cell(bookingDate)="row">
+                <div>{{converteMongoToDate(row.value)}}</div>
+              </template>
+              <template v-slot:cell(lastTransDate)="row">
+                <div>{{converteMongoToDate(row.value)}}</div>
+              </template>
+          <template v-slot:cell(closedDate)="row">
+                <div>{{converteMongoToDate(row.value)}}</div>
+              </template>
+              <template v-slot:cell(dueDate)="row">
+                <div>{{converteMongoToDate(row.value)}}</div>
+              </template>
+               <template v-slot:cell(actualAmount)="row">
+                <div>{{ formatter.format(row.value)}}</div>
+              </template>
+              <template v-slot:cell(totalPrinciplePaid)="row">
+                <div>{{ formatter.format(row.value)}}</div>
+              </template>
+              <template v-slot:cell(totalIntrestPaid)="row">
+                <div>{{ formatter.format(row.value)}}</div>
+              </template>
+          </b-table>
+        </b-tab>
+        <b-tab id="current">
+          <template v-slot:title>
+            <!-- <b-spinner type="grow" small></b-spinner>I'm
+            <i>custom</i>-->
+            <span style="color: #007bff;">
+              CURRENT
+              (<strong style="color:#007bff;">{{form.activeBookings.length}}</strong>)
             </span>
           </template>
           <b-table
@@ -130,6 +169,9 @@
           <template v-slot:cell(bookingDate)="row">
                 <div>{{converteMongoToDate(row.value)}}</div>
               </template>
+              <template v-slot:cell(lastTransDate)="row">
+                <div>{{converteMongoToDate(row.value)}}</div>
+              </template>
           <template v-slot:cell(closedDate)="row">
                 <div>{{converteMongoToDate(row.value)}}</div>
               </template>
@@ -137,13 +179,13 @@
                 <div>{{converteMongoToDate(row.value)}}</div>
               </template>
                <template v-slot:cell(actualAmount)="row">
-                <div>{{row.value}}/-</div>
+                <div>{{ formatter.format(row.value)}}</div>
               </template>
               <template v-slot:cell(totalPrinciplePaid)="row">
-                <div>{{row.value}}/-</div>
+                <div>{{ formatter.format(row.value)}}</div>
               </template>
               <template v-slot:cell(totalIntrestPaid)="row">
-                <div>{{row.value}}/-</div>
+                <div>{{ formatter.format(row.value)}}</div>
               </template>
           </b-table>
         </b-tab>
@@ -167,17 +209,20 @@
           <template v-slot:cell(closedDate)="row">
                 <div>{{converteMongoToDate(row.value)}}</div>
               </template>
+              <template v-slot:cell(lastTransDate)="row">
+                <div>{{converteMongoToDate(row.value)}}</div>
+              </template>
               <template v-slot:cell(dueDate)="row">
                 <div>{{converteMongoToDate(row.value)}}</div>
               </template>
                <template v-slot:cell(actualAmount)="row">
-                <div>{{row.value}}/-</div>
+                <div>{{ formatter.format(row.value)}}</div>
               </template>
               <template v-slot:cell(totalPrinciplePaid)="row">
-                <div>{{row.value}}/-</div>
+                <div>{{ formatter.format(row.value)}}</div>
               </template>
               <template v-slot:cell(totalIntrestPaid)="row">
-                <div>{{row.value}}/-</div>
+                <div>{{ formatter.format(row.value)}}</div>
               </template>
           </b-table>
         </b-tab>
@@ -201,17 +246,20 @@
           <template v-slot:cell(closedDate)="row">
                 <div>{{converteMongoToDate(row.value)}}</div>
               </template>
+              <template v-slot:cell(lastTransDate)="row">
+                <div>{{converteMongoToDate(row.value)}}</div>
+              </template>
               <template v-slot:cell(dueDate)="row">
                 <div>{{converteMongoToDate(row.value)}}</div>
               </template>
                <template v-slot:cell(actualAmount)="row">
-                <div>{{row.value}}/-</div>
+                <div>{{ formatter.format(row.value)}}</div>
               </template>
               <template v-slot:cell(totalPrinciplePaid)="row">
-                <div>{{row.value}}/-</div>
+                <div>{{ formatter.format(row.value)}}</div>
               </template>
               <template v-slot:cell(totalIntrestPaid)="row">
-                <div>{{row.value}}/-</div>
+                <div>{{ formatter.format(row.value)}}</div>
               </template>
           </b-table>
         </b-tab>
@@ -232,6 +280,9 @@
            <template v-slot:cell(bookingDate)="row">
                 <div>{{converteMongoToDate(row.value)}}</div>
               </template>
+           <template v-slot:cell(lastTransDate)="row">
+                <div>{{converteMongoToDate(row.value)}}</div>
+              </template>
            <template v-slot:cell(closedDate)="row">
                 <div>{{converteMongoToDate(row.value)}}</div>
               </template>
@@ -239,13 +290,13 @@
                 <div>{{converteMongoToDate(row.value)}}</div>
               </template>
               <template v-slot:cell(actualAmount)="row">
-                <div>{{row.value}}/-</div>
+                <div>{{ formatter.format(row.value)}}</div>
               </template>
               <template v-slot:cell(totalPrinciplePaid)="row">
-                <div>{{row.value}}/-</div>
+                <div>{{ formatter.format(row.value)}}</div>
               </template>
               <template v-slot:cell(totalIntrestPaid)="row">
-                <div>{{row.value}}/-</div>
+                <div>{{ formatter.format(row.value)}}</div>
               </template>
           </b-table>
         </b-tab>
@@ -269,8 +320,9 @@ import moment from "moment";
 export default {
   data() {
     return {
-      tabIndex: 1,
+      tabIndex: 0,
       brokerNo: null,
+      formatter: "",
       search: "",
       form: {
         brokerNo: null,
@@ -283,18 +335,21 @@ export default {
         auctionedBookings: [],
         closedBookings: [],
         activeBookings: [],
-        pendingBookings: []
+        pendingBookings: [],
+        runningAccounts:[]
       },
       fields: [
         // { key: "selected", label: "Selected", sortable: false },
         { key: "bookingDate", label: "Booking Date", sortable: true },
-        { key: "closedDate", label: "Closed Date", sortable: true },
         { key: "dueDate", label: "Due Date", sortable: true },
+        { key: "lastTransDate", label: "Last Transaction Date", sortable: true },
         { key: "bookingNo", label: "Booking No", sortable: true },
-        // { key: "isActive", label: "Is Active", sortable: false },
+        { key: "tranType", label: "Transaction Type", sortable: false },
+        { key: "loanType", label: "Loan Type", sortable: false },
         { key: "actualAmount", label: "Issue Amount", sortable: true },
         { key: "totalPrinciplePaid", label: "Principle Paid", sortable: true },
         { key: "totalIntrestPaid", label: "Intrest Paid", sortable: true },
+        { key: "closedDate", label: "Closed Date", sortable: true },
         { key: "totalTrans", label: "Total Transactions", sortable: true }
       ]
     };
@@ -308,7 +363,7 @@ export default {
         // newDate.set("month", dateObject.month);
         // newDate.set("date", dateObject.dayOfMonth);
         // newDate.startOf("day");
-        return newDate.format("DD-MM-YYYY");
+        return newDate.format("DD/MM/YYYY");
       }
       return null;
     },
@@ -328,6 +383,9 @@ export default {
           .then(response => {
             loader.hide();
             if (response.data != null && response.data != "") {
+                let runningAccounts = [...response.data.actualResults[0].activeBookings,
+                                ...response.data.actualResults[0].pendingBookings];
+              response.data.actualResults[0].runningAccounts = runningAccounts;
               this.form = response.data.actualResults[0];
             }
           })
@@ -367,6 +425,10 @@ export default {
     }
   },
   mounted() {
+      this.formatter = new Intl.NumberFormat('en-US', {
+            style: 'currency',
+            currency: 'INR',
+        });
     this.getsSelectedBroker();
   },
   created() {
