@@ -45,12 +45,14 @@
             <b-form-input id="dob" v-model="form.dob" type="text" placeholder="YYYY-MM-DD"></b-form-input>
             <b-input-group-append>
               <b-form-datepicker
-                v-model="form.dob"
                 button-only
+                show-decade-nav="true"
+                hide-header
+                v-model="dateDob"
                 :date-format-options="{ day: 'numeric', month: 'numeric',year: 'numeric'  }"
                 right
+                @context="onContext"
                 locale="en-US"
-                aria-controls="dob"
               ></b-form-datepicker>
             </b-input-group-append>
           </b-input-group>
@@ -232,7 +234,7 @@
         <b-col md="2" class="col-padding-margin-right">
           <label for="dow">Date Of Creation</label>
           <b-input-group>
-            <b-form-input id="dow" disabled v-model="form.dow" type="text" placeholder="YYYY-MM-DD"></b-form-input>
+            <b-form-input id="dow" disabled v-model="form.dow" type="text" placeholder="DD/MM/YYYY"></b-form-input>
             <!-- <b-input-group-append>
               <b-form-datepicker
                 v-model="form.dow"
@@ -421,6 +423,7 @@ export default {
   data() {
     return {
       url: "",
+      dateDob:null,
       imageData: null,
       custImage: null,
       mainProps: {
@@ -453,7 +456,7 @@ export default {
         dob: null,
         dow: null,
         occupation: null,
-        age: 55,
+        age: null,
         gender: "MALE",
         remarks: null,
         ownrent: false,
@@ -497,6 +500,11 @@ export default {
     };
   },
   methods: {
+    onContext(ctx){
+      if(this.dateDob != null){
+        this.form.dob = moment(ctx.selectedYMD).format("DD/MM/YYYY");
+      }
+    },
     chooseImage() {
       this.$refs.fileInput.click();
     },
@@ -737,7 +745,6 @@ export default {
       let formData = new FormData();
       this.form.createdBy = this.$store.state.user.username;
       this.form.updatedBy = this.$store.state.user.username;
-      console.log(JSON.stringify(this.form));
       formData.append("form", JSON.stringify(this.form));
       formData.append("file", this.custImage[0]);
       this.$bvModal
@@ -798,7 +805,7 @@ export default {
     this.occupationOptions = this.$store.state.master.typeOfOccupation;
     this.contactRelationOptions = this.$store.state.master.typeOfRelation;
     this.form.companyCode = this.$store.state.selectedCompany.value;
-    this.form.dow = moment().format("YYYY-MM-DD");
+    this.form.dow = moment().format("DD/MM/YYYY");
     this.getAccountCode();
   },
   computed: {
@@ -808,8 +815,11 @@ export default {
   },
   watch: {
     dob() {
+      if(this.form.dob !== moment(this.dateDob).format("DD/MM/YYYY")){
+        this.dateDob = moment(this.form.dob, 'DD/MM/YYYY').format("YYYY-MM-DD")
+      }
       var today = moment();
-      var dob = moment(this.form.dob);
+      var dob = moment(this.form.dob, 'DD/MM/YYYY');
       var diff = today.diff(dob, "years");
       this.form.age = diff;
     }
