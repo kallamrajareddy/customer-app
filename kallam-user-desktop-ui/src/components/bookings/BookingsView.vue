@@ -89,7 +89,7 @@
               <b-button
                 style="float:right; margin-right:4px"
                 variant="primary"
-                @click="$router.push('/createBooking')"
+                @click="$router.push({name: 'CreateBooking', params :{brokerNo: form.brokerNo, search: ''}})"
               >Create Booking</b-button>
             </b-col>
           </b-row>
@@ -124,6 +124,7 @@
             sticky-header="true"
             responsive
             selectable
+            select-mode="single"
             :fields="fields"
             :items="form.runningAccounts"
           >
@@ -163,6 +164,7 @@
             sticky-header="true"
             responsive
             selectable
+            select-mode="single"
             :fields="fields"
             :items="form.activeBookings"
           >
@@ -200,6 +202,7 @@
             sticky-header="true"
             responsive
             selectable
+            select-mode="single"
             :fields="fields"
             :items="form.pendingBookings"
           >
@@ -237,6 +240,7 @@
             sticky-header="true"
             responsive
             selectable
+            select-mode="single"
             :fields="fields"
             :items="form.auctionedBookings"
           >
@@ -274,6 +278,7 @@
             sticky-header="true"
             responsive
             selectable
+            select-mode="single"
             :fields="fields"
             :items="form.closedBookings"
           >

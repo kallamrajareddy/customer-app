@@ -63,7 +63,7 @@
               </b-button>
               <b-button
                style="float:right; margin-right:4px"
-                variant="primary" @click="$router.push('/createBooking')"
+                variant="primary" @click="$router.push({name: 'CreateBooking', params :{brokerNo: selected[0].brokerNo, search: accountSearch}})"
               >Create Booking
               </b-button>
                <b-button

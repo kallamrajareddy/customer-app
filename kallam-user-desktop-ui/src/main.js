@@ -11,6 +11,34 @@ import Axios from 'axios'
 import Loading from 'vue-loading-overlay';
 // Import stylesheet
 import 'vue-loading-overlay/dist/vue-loading.css';
+import VueBootstrapDatetimePicker from 'vue-bootstrap-datetimepicker';
+import $ from 'jquery'
+import 'bootstrap/dist/css/bootstrap.css';
+import 'pc-bootstrap4-datetimepicker/build/css/bootstrap-datetimepicker.css';
+
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { faUserSecret } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+
+import '@fortawesome/fontawesome-free/css/all.css'
+import '@fortawesome/fontawesome-free/js/all.js'
+
+library.add(faUserSecret)
+$.extend(true, $.fn.datetimepicker.defaults, {
+    icons: {
+        time: 'far fa-clock',
+        date: 'far fa-calendar',
+        up: 'fas fa-arrow-up',
+        down: 'fas fa-arrow-down',
+        previous: 'fas fa-chevron-left',
+        next: 'fas fa-chevron-right',
+        today: 'fas fa-calendar-check',
+        clear: 'far fa-trash-alt',
+        close: 'far fa-times-circle'
+    }
+});
+Vue.component('font-awesome-icon', FontAwesomeIcon)
+Vue.use(VueBootstrapDatetimePicker);
 // Init plugin
 Vue.use(Loading);
 // Install BootstrapVue
@@ -20,6 +48,7 @@ Vue.use(BootstrapVue)
 Vue.use(IconsPlugin)
 Vue.use(require('vue-moment'));
 //Vue.use(VueAxios, axios)
+
 
 const token = localStorage.getItem('token');
 if (token) {

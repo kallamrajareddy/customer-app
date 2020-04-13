@@ -140,7 +140,7 @@ export default {
 }
 
 .table thead tr th{
-  background-color: azure !important;
+  background-color: azure;
 }
 
 .table.b-table > tbody > .table-active, .table.b-table > tbody > .table-active > th, .table.b-table > tbody > .table-active > td {
