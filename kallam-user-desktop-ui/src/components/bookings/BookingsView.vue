@@ -124,6 +124,7 @@
             sticky-header="true"
             responsive
             selectable
+            @row-dblclicked="selectedBooking"
             select-mode="single"
             :fields="fields"
             :items="form.runningAccounts"
@@ -164,6 +165,7 @@
             sticky-header="true"
             responsive
             selectable
+            @row-dblclicked="selectedBooking"
             select-mode="single"
             :fields="fields"
             :items="form.activeBookings"
@@ -202,6 +204,7 @@
             sticky-header="true"
             responsive
             selectable
+            @row-dblclicked="selectedBooking"
             select-mode="single"
             :fields="fields"
             :items="form.pendingBookings"
@@ -240,6 +243,7 @@
             sticky-header="true"
             responsive
             selectable
+            @row-dblclicked="selectedBooking"
             select-mode="single"
             :fields="fields"
             :items="form.auctionedBookings"
@@ -278,6 +282,7 @@
             sticky-header="true"
             responsive
             selectable
+            @row-dblclicked="selectedBooking"
             select-mode="single"
             :fields="fields"
             :items="form.closedBookings"
@@ -427,6 +432,10 @@ export default {
         name: "UpdateAccount",
         params: { brokerNo: brokerNo, search: this.search }
       });
+    },
+    selectedBooking(item){
+      this.$router.push({name: 'ViewModifyBooking', params :{req: {brokerNo: this.brokerNo, companyCode: this.$store.state.selectedCompany.value,
+          bookingNo: item.bookingNo }}})
     }
   },
   mounted() {

@@ -41,17 +41,11 @@
         <b-col md="2" class="col-padding-margin-right">
           <label for="dob">Data Of Birth</label>
           <b-input-group>
-            <b-form-input id="dob" v-model="form.dob" type="text" placeholder="YYYY-MM-DD"></b-form-input>
-            <b-input-group-append>
-              <b-form-datepicker
-                v-model="form.dob"
-                button-only
-                :date-format-options="{ day: 'numeric', month: 'numeric',year: 'numeric'  }"
-                right
-                locale="en-US"
-                aria-controls="dob"
-              ></b-form-datepicker>
-            </b-input-group-append>
+            <date-picker
+                v-model="dateDob"
+                :config="dobOptions"
+                placeholder="DD/MM/YYYY"
+              ></date-picker>
           </b-input-group>
         </b-col>
         <b-col md="1" class="col-padding-margin-right">
@@ -241,7 +235,7 @@
         <b-col md="2" class="col-padding-margin-right">
           <label for="dow">Data Of Creation</label>
           <b-input-group>
-            <b-form-input id="dow" disabled v-model="form.dow" type="text" placeholder="YYYY-MM-DD"></b-form-input>
+            <b-form-input id="dow" disabled v-model="dow" type="text" placeholder="DD/MM/YYYY"></b-form-input>
           </b-input-group>
         </b-col>
         <b-col md>
@@ -426,6 +420,12 @@ export default {
     return {
       search: "",
       url: "",
+      dateDob: null,
+      dow: null,
+      dobOptions: {
+        format: "DD/MM/YYYY",
+        useCurrent: false
+      },
       imageData: null,
       custImage: null,
       mainProps: {
@@ -441,32 +441,32 @@ export default {
       nameState: null,
       form: {
         companyCode: null,
-        brokerNo: "GP-238",
-        brokerName: "ABDULLA . SK ; S/ ABDULSATTAR",
+        brokerNo: null,
+        brokerName: null,
         aadharNo: null,
-        addr1: "S/ ABDULSATTAR",
-        addr2: "9-29[N]",
-        addr3: "IND-2",
-        town: "YANAMALAKUDURU",
-        district: "KRISHNA",
+        addr1: null,
+        addr2: null,
+        addr3: null,
+        town: null,
+        district: null,
         area: null,
         zipCode: null,
-        otherPhones1: "9908366417 [MUNAF]",
-        otherPhones2: "8885188786",
-        mobileNo: "7306177595",
+        otherPhones1: null,
+        otherPhones2: null,
+        mobileNo: null,
         email: null,
-        dob: "1960-08-05T00:00:00.000",
-        dow: "2014-08-05T00:00:00.000",
-        occupation: "TINKARING",
-        age: 55,
-        gender: "MALE",
+        dob: null,
+        dow: null,
+        occupation: null,
+        age: null,
+        gender: null,
         remarks: null,
         ownrent: true,
         defaulter: false,
-        contactPerson1: "Nill",
+        contactPerson1: null,
         contact1Mobile: null,
         contact1PersonId: null,
-        contact1Relation: "NILL",
+        contact1Relation: null,
         contactPerson2: null,
         contact2Mobile: null,
         contact2PersonId: null,
@@ -807,8 +807,9 @@ export default {
         .then(response => {
           loader.hide();
           if (response.data != null && response.data != "") {
-            response.data.dob = this.converteMongoToDate(response.data.dob);
-            response.data.dow = this.converteMongoToDate(response.data.dow);
+            this.dateDob = this.converteMongoToDate(response.data.dob);
+            this.dow = this.converteMongoToDate(response.data.dow);
+            response.data.dow = moment(this.dow, "YYYY-MM-DD")
             response.data.createdDt = null;
             response.data.updatedDt = null;
             response.data.bookings = null;
@@ -843,14 +844,13 @@ export default {
         });
     },
     converteMongoToDate(dateObject) {
-      //{  "month": "AUGUST",  "year": 1960,  "dayOfMonth": 5,  "hour": 5,  "minute": 30,  "second": 0}
       if (dateObject != null) {
         var newDate = moment.utc();
         newDate.set("year", dateObject.year);
         newDate.set("month", dateObject.month);
         newDate.set("date", dateObject.dayOfMonth);
         newDate.startOf("day");
-        return newDate.format("YYYY-MM-DD");
+        return newDate.format("DD/MM/YYYY");
       }
       return null;
     }
@@ -867,10 +867,10 @@ export default {
     }
   },
   watch: {
-    dob() {
+    dateDob() {
       var today = moment();
-      var dob = moment(this.form.dob);
-      var diff = today.diff(dob, "years");
+      this.form.dob = moment(this.dateDob, 'DD/MM/YYYY');
+      var diff = today.diff(this.form.dob, "years");
       this.form.age = diff;
     }
   },
