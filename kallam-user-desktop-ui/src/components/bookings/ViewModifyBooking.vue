@@ -359,7 +359,7 @@
         <b-td >{{converteMongoToDate(trans.rcvDate)}}</b-td>
         <b-td>{{formatter.format(trans.principle)}}</b-td>
         <b-td>{{formatter.format(trans.intrest)}}</b-td>
-        <b-td ></b-td>
+        <b-td  :style="{'color': '#fff','background-color' :Math.sign(trans.pending)>=-0?'#28a745':'#DC3547'}">{{formatter.format(trans.pending)}}</b-td>
         <!-- <b-td variant="success">72</b-td>
         <b-td>23</b-td> -->
       </b-tr>
@@ -510,7 +510,7 @@ export default {
     },
     createBooking() {
       this.attemptSubmit = true;
-      console.log(this.form);
+      //console.log(this.form);
 
       // if (!this.checkFormValidity()) {
       //   return;
@@ -606,14 +606,36 @@ export default {
             }
             if(response.data.bookings.bookingTrans.length>0){
                 this.displayFlg = true;
-                response.data.bookings.bookingTrans.forEach(trans=>{
+                 response.data.bookings.bookingTrans.sort((a,b)=> moment(a.rcvDate)-moment(b.rcvDate))
+                 response.data.bookings.bookingTrans.forEach((trans, idx)=>{
                 this.paidPrinciple +=parseFloat(trans.principle);
                  this.paidIntrest +=parseFloat(trans.intrest);
+                 let  daysDiff;
+                 let prin = parseFloat(response.data.bookings.amountTaken);
+                 let rate = parseFloat(response.data.bookings.intrestRate);
+                let intPerYear = parseFloat(prin*((rate*12)/100));
+                let perDay =  parseFloat(intPerYear/360);
+                let actualIntrest;
+                 if(idx == 0){
+                   daysDiff = moment(trans.rcvDate).diff(moment(response.data.bookings.bookingDate), "days");
+                    actualIntrest = parseFloat(daysDiff*perDay);
+                   trans.pending =  parseFloat(parseFloat(trans.intrest)-actualIntrest);
+                 }else{
+                   let paidTotal = parseFloat(0.00);
+                   for(let i = (idx-1); i>=0; i--){
+                     paidTotal += parseFloat( response.data.bookings.bookingTrans[i].principle);
+                   }
+                     prin = parseFloat(response.data.bookings.amountTaken) - parseFloat(paidTotal);
+                     daysDiff = moment(trans.rcvDate).diff(moment(response.data.bookings.bookingTrans[idx-1].rcvDate), "days");
+                     intPerYear = parseFloat(prin*((rate*12)/100));
+                     perDay =  parseFloat(intPerYear/360);
+                     actualIntrest = parseFloat(daysDiff*perDay) - parseFloat(response.data.bookings.bookingTrans[idx-1].pending);
+                     trans.pending =  parseFloat(parseFloat(trans.intrest)-actualIntrest);
+                 }
                 })
                 
             }
            
-            
             this.form = response.data;
             this.form.bookings.bookingDate = moment(this.bookingDate,"DD/MM/YYYY");
             this.form.bookings.dueDate = moment(this.dueDate, "DD/MM/YYYY");

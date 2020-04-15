@@ -223,7 +223,7 @@ export default {
       this.totalRows = filteredItems.length;
     },
     openImage(accCode){
-        console.log(accCode)
+        //console.log(accCode)
         this.showImg = accCode;
         this.$bvModal.show("modal-image");
     },

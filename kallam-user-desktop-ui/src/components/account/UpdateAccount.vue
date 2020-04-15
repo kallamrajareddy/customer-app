@@ -732,7 +732,7 @@ export default {
       }
       let formData = new FormData();
       this.form.updatedBy = this.$store.state.user.username;
-      console.log(JSON.stringify(this.form));
+     // console.log(JSON.stringify(this.form));
       formData.append("form", JSON.stringify(this.form));
       if(this.custImage !=null && this.custImage.length>0){
           formData.append("file", this.custImage[0]);

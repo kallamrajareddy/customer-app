@@ -429,7 +429,7 @@ export default {
   methods: {
     createBooking() {
       this.attemptSubmit=true;
-      console.log(this.form)
+      //console.log(this.form)
       
       // if (!this.checkFormValidity()) {
       //   return;
