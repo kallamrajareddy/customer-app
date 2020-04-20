@@ -27,9 +27,7 @@
             </template>
             <b-dropdown-item-button @click="$router.push('/bookings')">Bookings</b-dropdown-item-button>
             <b-dropdown-divider></b-dropdown-divider>
-            <b-dropdown-item-button @click="$router.push('/bookings-view')">Booking Details</b-dropdown-item-button>
-            <b-dropdown-divider></b-dropdown-divider>
-            <b-dropdown-item-button>Recipts</b-dropdown-item-button>
+            <b-dropdown-item-button @click="$router.push('/recipts')">Recipts</b-dropdown-item-button>
           </b-dropdown>
 
           <!-- <b-nav-form>

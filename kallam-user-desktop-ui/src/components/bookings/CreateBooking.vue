@@ -359,7 +359,7 @@ export default {
         minDate: new Date()
       },
       typeOfLoans: [
-        { label: "Issue", options: ["DOCUMENT", "GOLD", "INSECURE", "SILVER"] },
+        { label: "Issue", options: ["GOLD", "SILVER", "INSECURE", "DOCUMENT"] },
         { label: "Capital", options: ["BANK", "DEPOSIT", "OWN"] },
         { label: "Off Exp", options: [] },
         { label: "Res-Exp", options: [] }
@@ -398,7 +398,7 @@ export default {
         intrestRate: null,
         dueDate: null,
         valueDate: null,
-        loanType: null,
+        loanType: "GOLD",
         remarks: null,
         amountTaken: null,
         intrestType: "RS",
@@ -550,6 +550,9 @@ export default {
       this.form.loanType = "";
       this.loanOptions = this.typeOfLoans[this.selectedTrans].options;
       this.form.tranType = this.typeOfLoans[this.selectedTrans].label;
+      if(this.form.tranType == "Issue"){
+        this.form.loanType = "GOLD";
+      }
       this.form.items = [];
       this.multiItems = [];
     },

@@ -10,6 +10,8 @@ import Booking from '@/components/bookings/Booking'
 import BookingsView from '@/components/bookings/BookingsView'
 import CreateBooking from '@/components/bookings/CreateBooking'
 import ViewModifyBooking from '@/components/bookings/ViewModifyBooking'
+import Recipts from '@/components/recipts/Recipts'
+import NewRecipt from '@/components/recipts/NewRecipt'
 import store from '@/store/store'
 // import axios from 'axios'
 
@@ -84,6 +86,22 @@ const routes = [{
         path: '/view-modify-booking',
         name: 'ViewModifyBooking',
         component: ViewModifyBooking,
+        meta: {
+            requiresAuth: true
+        }
+    },
+    {
+        path: '/recipts',
+        name: 'Recipts',
+        component: Recipts,
+        meta: {
+            requiresAuth: true
+        }
+    },
+    {
+        path: '/new-recipt',
+        name: 'NewRecipt',
+        component: NewRecipt,
         meta: {
             requiresAuth: true
         }

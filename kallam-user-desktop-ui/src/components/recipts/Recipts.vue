@@ -2,7 +2,7 @@
   <b-card>
        <b-row>
           <b-col>
-          <span class="my-card-heading">BOOKINGS SEARCH</span>
+          <span class="my-card-heading">RECIPTS SEARCH</span>
           </b-col>
       </b-row>
     <b-row>
@@ -11,7 +11,7 @@
           <b-row class="my-1">
             <b-col md sm="2" style="    padding-top: 10px;">
               <label for="accountSearch">
-                <strong>Bookings Search:</strong>
+                <strong>Recipts Search:</strong>
               </label>
             </b-col>
             <b-col  sm="10" md="9" style="display: flex;padding-left: 0px;">
@@ -22,7 +22,7 @@
                 v-model="accountSearch"
               ></b-form-input>
               <b-button
-                @click="searchAccount"
+                @click="searchBooking"
                 variant="primary"
                 :disabled="!(accountSearch !== null && accountSearch.length>=3)"
               >
@@ -39,7 +39,7 @@
         <b-card>
         <b-row>
             <b-col md="3" style="max-width: 260px;">
-             <b-card-title style="text-align: left; width:260px ">Booking Found ({{totalRows}})</b-card-title>
+             <b-card-title style="text-align: left; width:260px ">Recipts Found ({{totalRows}})</b-card-title>
             </b-col>
             <b-col md="3">
 <b-form-input
@@ -56,14 +56,13 @@
                style="float:right;"
                 variant="primary"
                 :disabled="selected == ''"
-                @click="editBookings"
+                @click="createRecipt"
               >
                 <b-icon icon="pencil" aria-hidden="true"></b-icon>
-                <span class="sr-only">pencil</span>Edit Bookings
+                <span class="sr-only">pencil</span>New Recipt
               </b-button>
-              <b-button
+              <!-- <b-button
                style="float:right; margin-right:4px"
-               :disabled="selected == ''"
                 variant="primary" @click="$router.push({name: 'CreateBooking', params :{brokerNo: selected[0].brokerNo, search: accountSearch}})"
               >Create Booking
               </b-button>
@@ -72,7 +71,7 @@
                :disabled="selected == ''"
                 variant="primary" 
               >GoTo Account
-              </b-button>
+              </b-button> -->
             </b-col>
             </b-row>
          
@@ -90,59 +89,18 @@
             sticky-header="true"
             responsive
           >
-            <!-- Example scoped slot for select state illustrative purposes -->
-            <!-- <template v-slot:cell(selected)="{ rowSelected }">
-              <template v-if="rowSelected">
-                <span aria-hidden="true">&check;</span>
-                <span class="sr-only">Selected</span>
-              </template>
-              <template v-else>
-                <span aria-hidden="true">&nbsp;</span>
-                <span class="sr-only">Not selected</span>
-              </template>
-            </template> -->
+           
              <template v-slot:cell(brokerName)="row">
                 <div style="text-align: left">{{row.value}}</div>
               </template>
-             <template v-slot:cell(activeCount)="row">
-                 <div
-                 v-if="row.value>0"
-                 class="count-color"
-                ><strong>{{row.value}}</strong></div>
-                <div v-else style="text-align: center">{{row.value}}</div>
+              <template v-slot:cell(amountTaken)="row">
+                <div style="text-align: center">{{formatter.format(row.value)}}</div>
               </template>
-             <template v-slot:cell(total)="row">
-               <div 
-                ><strong>{{row.value}}</strong></div>
+              
+              <template v-slot:cell(bookingDate)="row">
+                <div style="text-align: center">{{converteMongoToDate(row.value)}}</div>
               </template>
-             <template v-slot:cell(pendingCount)="row">
-                <div
-                 v-if="row.value>0"
-                 class="count-color"
-                 style="background-color:#ffc107"
-                ><strong>{{row.value}}</strong></div>
-                <div v-else style="text-align: center">{{row.value}}</div>
-              </template>
-             <template v-slot:cell(auctionedCount)="row">
-                <div
-                 v-if="row.value>0"
-                 class="count-color"
-                 style="background-color: #dc3545"
-                ><strong>{{row.value}}</strong></div>
-                <div v-else style="text-align: center">{{row.value}}</div>
-              </template>
-             <template v-slot:cell(closedCount)="row">
-                <div
-                 v-if="row.value>0"
-                 class="count-color"
-                 style="background-color:#17a2b8"
-                ><strong>{{row.value}}</strong></div>
-                <div v-else style="text-align: center">{{row.value}}</div>
-              </template>
-              <template v-slot:cell(brokerNo)="row">
-                <div style="text-align: left;width: 100px">{{row.value}}</div>
-              </template>
-            <template v-slot:cell(image)="data">
+             <template v-slot:cell(image)="data">
               <div >
                    
                 <b-avatar class="align-baseline"  @click="openImage(data.item.brokerNo)" :src="'http://localhost:8182/images/'
@@ -154,16 +112,6 @@
                 ></span>
               </div>
             </template>
-            <!-- <template v-slot:cell(isActive)="data">
-              <div >
-                <span
-                v-if="(data.item.bookings.find(booking => booking.closed !== true) != undefined)"
-                  class="rounded-circle"
-                  style="background-color: #73D500;display: inline-block;height: 20px;width: 20px;"
-                ></span>
-                <span v-else class="rounded-circle" style="background-color: #EB597B;display: inline-block;height: 20px;width: 20px;"></span>
-              </div>
-            </template> -->
           </b-table>
         </b-card>
       </b-col>
@@ -188,9 +136,16 @@
 </template>
 
 <script>
+import moment from "moment";
 export default {
   data() {
     return {
+     req: {
+        brokerNo: null,
+        companyCode: null,
+        bookingNo: null
+      },
+      formatter: "",
       selected: "",
       showImg: "",
        filter: null,
@@ -199,22 +154,36 @@ export default {
       fields: [
         // { key: "selected", label: "Selected", sortable: false },
         { key: "image", label: "Identity", sortable: false },
+        { key: "bookingNo", label: "Booking No", sortable: true },
         { key: "brokerName", label: "Name", sortable: true },
         // { key: "isActive", label: "Is Active", sortable: false },
-        { key: "brokerNo", label: "Acc No", sortable: true },
-        { key: "activeCount", label: "Active Bookings", sortable: true },
-        { key: "pendingCount", label: "Pending Bookings", sortable: true },
-        { key: "auctionedCount", label: "Auctioned Bookings", sortable: true },
-        { key: "closedCount", label: "Closed Bookings", sortable: true },
-        { key: "total", label: "Total Bookings", sortable: true },
+        { key: "bookingDate", label: "Booking Date", sortable: true },
+        { key: "amountTaken", label: "Booking Amount", sortable: true },
+        // { key: "auctioned", label: "Auctioned Bookings", sortable: true },
+        // { key: "closed", label: "Closed Bookings", sortable: true },
       ],
       items: []
     };
   },
   methods: {
-      editBookings(){
+       converteMongoToDate(dateObject) {
+      //{  "month": "AUGUST",  "year": 1960,  "dayOfMonth": 5,  "hour": 5,  "minute": 30,  "second": 0}
+      if (dateObject != null && dateObject && dateObject != "") {
+        var newDate = moment(dateObject);
+        // newDate.set("year", dateObject.year);
+        // newDate.set("month", dateObject.month);
+        // newDate.set("date", dateObject.dayOfMonth);
+        // newDate.startOf("day");
+        return newDate.format("DD/MM/YYYY");
+      }
+      return null;
+    },
+      createRecipt(){
           let brokerNo = this.selected[0].brokerNo;
-          this.$router.push({name: "BookingsView", params :{brokerNo: brokerNo, search: this.accountSearch}})
+          let bookingNo = this.selected[0].bookingNo;
+          let companyCode =  this.$store.state.selectedCompany.value;
+          console.log(brokerNo,bookingNo,companyCode)
+          this.$router.push({name: "NewRecipt", params :{req:{brokerNo, bookingNo,companyCode}, search: this.accountSearch}})
       },
     onRowSelected(item) {
       this.selected = item;
@@ -228,42 +197,22 @@ export default {
         this.showImg = accCode;
         this.$bvModal.show("modal-image");
     },
-    searchAccount() {
-        let loader = this.$loading.show({
-        loader: "dots",
+    searchBooking() {
+        let formData = new FormData();
+        this.req.brokerNo = this.accountSearch.toUpperCase();
+        this.req.companyCode = this.$store.state.selectedCompany.value;
+
+      formData.append("form", JSON.stringify(this.req));
+      let loader = this.$loading.show({
+        loader: "bars",
         color: "green"
       });
-      let contactName = this.accountSearch.toUpperCase();
-       contactName = contactName.replace(/\//g, '+');
       this.$http
-        .get(
-          "/middleware/api/secured/get-booking-Lst/" +
-            encodeURIComponent(contactName.toUpperCase())+
-            "/" +
-            this.$store.state.selectedCompany.value
-        )
+        .post("/middleware/api/secured/get-broker-bookings-details", formData)
         .then(response => {
-             /*response.data.forEach(function(account){ 
-                 account.bookings.forEach((booking) =>{
-                     if(booking.closed){
-                         account._rowVariant = 'danger'
-                     }
-                 })
-              });
-              response.data.forEach(function(account){ 
-                 account.bookings.forEach((booking) =>{
-                     if(!booking.closed){
-                         account._rowVariant = 'info'
-                     }
-                 })
-              });*/
-              let actualResults = response.data.actualResults;
-              let emptyResults = response.data.emptyResults;
-              if(emptyResults.length > 0){
-                    actualResults = response.data.actualResults.concat(response.data.emptyResults);
-                }
+              let actualResults = response.data;
                actualResults.forEach(function(account){ 
-                 if(account.defaulter){
+                 if(account.defaulter || account.closed || account.auctioned){
                      account._rowVariant = 'danger'
                  }
               });
@@ -281,8 +230,9 @@ export default {
     }
   },
   mounted(){
+     this.formatter = new Intl.NumberFormat('en-IN');
       if(this.accountSearch != undefined && this.accountSearch != '' ){
-          this.searchAccount();
+          this.searchBooking();
       }
   },
   created() {
