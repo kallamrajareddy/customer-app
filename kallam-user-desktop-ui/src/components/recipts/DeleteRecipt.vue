@@ -3,7 +3,7 @@
     <b-card :style="{'background-color': (form.defaulter)?'red':'azure'}">
       <b-row>
         <b-col>
-          <span class="my-card-heading">NEW RECIPT</span>
+          <span class="my-card-heading" style="color:red;">DELETE RECIPT</span>
         </b-col>
       </b-row>
       <b-row>
@@ -27,30 +27,24 @@
             <b-form-input id="brokerName" v-model="form.brokerName" required disabled></b-form-input>
           </b-form-group>
         </b-col>
+      </b-row>
+      <b-row>
         <b-col md>
           <b-form-group id="mobileNoLbl" label="Mobile No" label-for="mobileNo">
             <b-form-input id="mobileNo" disabled v-model="form.mobileNo"></b-form-input>
           </b-form-group>
         </b-col>
-        <b-col md="2">
+        <b-col md>
           <b-form-group id="netWeightLbl" label="Net Weight" label-for="netWeight">
             <b-form-input id="netWeight" disabled v-model="form.netWeight"></b-form-input>
           </b-form-group>
         </b-col>
-        <b-col md="1">
+        <b-col md>
           <b-form-group id="purityLbl" label="Purity %" label-for="purity">
             <b-form-input id="purity" disabled v-model="form.purity"></b-form-input>
           </b-form-group>
         </b-col>
-      </b-row>
-      <b-row>
-        <b-col md="2" class="col-padding-margin-right">
-          <b-form-group id="reciptDateLbl" label="Recipt Date" label-for="reciptDate">
-            <date-picker v-model="reciptDate" :config="options" placeholder="DD/MM/YYYY"></date-picker>
-          </b-form-group>
-        </b-col>
-
-        <b-col md="2">
+        <b-col md>
           <b-form-group
             id="intrestRateLbl"
             :label="form.intrestType=='RS'?'Intrest Rate RS':'Intrest Rate %'"
@@ -59,194 +53,16 @@
             <b-form-input id="intrestRate" disabled v-model="form.intrestRate"></b-form-input>
           </b-form-group>
         </b-col>
-        <b-col md="2">
-          <b-form-group id="prinipleLbl" label="Priniple" label-for="priniple" style="color:red;">
-            <b-form-input id="priniple" v-model="submitForm.priniple" style="color:red;"></b-form-input>
-          </b-form-group>
-        </b-col>
-        <b-col md="2">
-          <b-form-group id="intrestLbl" label="Intrest" label-for="intrest" style="color:red;">
-            <b-form-input
-              id="intrest"
-              @blur="givenUpToDate"
-              v-model="submitForm.intrest"
-              style="color:red;"
-            ></b-form-input>
-          </b-form-group>
-        </b-col>
-
-        <b-col>
-          <b-form-group id="descriptionLbl" label="Description" label-for="description">
-            <b-form-input id="description" v-model="form.remarks" disabled></b-form-input>
-          </b-form-group>
-        </b-col>
       </b-row>
     </b-card>
     <b-card style="background-color:azure">
       <b-row>
-        <b-col md="8">
-          <b-row style="border: 1px solid #dee2e6;">
-            <b-table-simple small caption-top responsive title="Due Details">
-              <b-tbody>
-                <b-tr>
-                  <b-th style="border-top:0px">Given Up To</b-th>
-                  <b-td style="border-top:0px">
-                    <date-picker
-                      disabled
-                      v-model="dates.givenUpTo"
-                      :config="options"
-                      placeholder="DD/MM/YYYY"
-                    ></date-picker>
-                  </b-td>
-                  <b-th style="border-top:0px">Issue Date</b-th>
-                  <b-td style="border-top:0px">
-                    <date-picker
-                      v-model="dates.bookingDate"
-                      disabled
-                      :config="options"
-                      placeholder="DD/MM/YYYY"
-                    ></date-picker>
-                  </b-td>
-                  <b-th style="border-top:0px">Due Date</b-th>
-                  <b-td style="border-top:0px">
-                    <date-picker
-                      v-model="dates.dueDate"
-                      disabled
-                      :config="options"
-                      placeholder="DD/MM/YYYY"
-                    ></date-picker>
-                  </b-td>
-                  <b-th style="border-top:0px">Expiry Date</b-th>
-                  <b-td style="border-top:0px">
-                    <date-picker
-                      v-model="dates.valueDate"
-                      disabled
-                      :config="options"
-                      placeholder="DD/MM/YYYY"
-                    ></date-picker>
-                  </b-td>
-                </b-tr>
-                <b-tr>
-                  <b-th style="border-top:0px">Add Due Months</b-th>
-                  <b-td style="border-top:0px">
-                    <b-form-input
-                      id="description"
-                      type="number"
-                      @blur="addDMonths"
-                      v-model="dates.dueMonths"
-                      style="width:80px"
-                    ></b-form-input>
-                  </b-td>
-                  <b-th style="border-top:0px">Add Exp Months</b-th>
-                  <b-td style="border-top:0px">
-                    <b-form-input
-                      id="description"
-                      type="number"
-                      @blur="addVMonths"
-                      v-model="dates.expMonths"
-                      style="width:80px"
-                    ></b-form-input>
-                  </b-td>
-                  <b-th style="border-top:0px">Next Due Date</b-th>
-                  <b-td style="border-top:0px">
-                    <date-picker
-                      v-model="dates.nxtDueDate"
-                      disabled
-                      :config="options"
-                      placeholder="DD/MM/YYYY"
-                    ></date-picker>
-                  </b-td>
-                  <b-th style="border-top:0px">Next Exp Date</b-th>
-                  <b-td style="border-top:0px">
-                    <date-picker
-                      v-model="dates.nxtValueDate"
-                      :config="options"
-                      disabled
-                      placeholder="DD/MM/YYYY"
-                    ></date-picker>
-                  </b-td>
-                </b-tr>
-              </b-tbody>
-            </b-table-simple>
-          </b-row>
-          <b-row style="border: 1px solid #dee2e6;">
-            <b-table-simple small caption-top responsive>
-              <b-tbody>
-                <b-tr>
-                  <b-th style="border-top:0px">Amount</b-th>
-                  <b-td style="border-top:0px">
-                    <b-form-input id="actualAmount" disabled v-model="amounts.actualAmount"></b-form-input>
-                  </b-td>
-                  <b-th style="border-top:0px"></b-th>
-                  <b-td style="border-top:0px"></b-td>
-                  <b-th style="border-top:0px">Principle Bal</b-th>
-                  <b-td style="border-top:0px">
-                    <b-form-input id="prinipleBalance" disabled v-model="amounts.prinipleBalance"></b-form-input>
-                  </b-td>
-                </b-tr>
-                <b-tr>
-                  <b-th style="border-top:0px">Intrest</b-th>
-                  <b-td style="border-top:0px">
-                    <b-form-input id="intrestTilDate" disabled v-model="amounts.intrestTilDate"></b-form-input>
-                  </b-td>
-                  <b-th style="border-top:0px">Booking Date</b-th>
-                  <b-td style="border-top:0px">
-                    <b-form-input id="bookingDate" disabled v-model="dates.bookingDate"></b-form-input>
-                  </b-td>
-                  <b-th style="border-top:0px">Intrest Bal</b-th>
-                  <b-td style="border-top:0px">
-                    <b-form-input id="intrestBalance" disabled v-model="amounts.intrestBalance"></b-form-input>
-                  </b-td>
-                </b-tr>
-                <b-tr>
-                  <b-th style="border-top:0px">Principle Paid</b-th>
-                  <b-td style="border-top:0px">
-                    <b-form-input
-                      id="priniplePaidTil"
-                      type="number"
-                      disabled
-                      v-model="amounts.priniplePaidTil"
-                    ></b-form-input>
-                  </b-td>
-                  <b-th style="border-top:0px">Days</b-th>
-                  <b-td style="border-top:0px">
-                    <b-form-input id="days" disabled v-model="dates.daysTilNow"></b-form-input>
-                  </b-td>
-                  <b-th style="border-top:0px">Total Bal</b-th>
-                  <b-td style="border-top:0px">
-                    <b-form-input
-                      id="totalBalance"
-                      disabled
-                      v-model="amounts.totalBalance"
-                      style="color:red"
-                    ></b-form-input>
-                  </b-td>
-                </b-tr>
-                <b-tr>
-                  <b-th style="border-top:0px">Intrest Paid</b-th>
-                  <b-td style="border-top:0px">
-                    <b-form-input
-                      id="intrestPaidTil"
-                      disabled
-                      v-model="amounts.intrestPaidTil"
-                      style="color:red"
-                    ></b-form-input>
-                  </b-td>
-                  <b-th style="border-top:0px">Remarks</b-th>
-                  <b-td colspan="4" style="border-top:0px">
-                    <b-form-input id="intrestPaidTil" v-model="submitForm.remarks"></b-form-input>
-                  </b-td>
-                </b-tr>
-              </b-tbody>
-            </b-table-simple>
-          </b-row>
-        </b-col>
-        <b-col md="4">
+        <b-col md>
           <b-row v-if="form.bookingTrans.length>0">
             <b-table-simple hover small caption-top responsive>
               <b-thead head-variant="dark">
                 <b-tr>
-                  <b-th>Principle Amount</b-th>
+                  <!-- <b-th>Principle Amount</b-th> -->
                   <b-th>Transaction Date</b-th>
                   <b-th>Paid Principle</b-th>
                   <b-th>Paid Interest</b-th>
@@ -255,29 +71,12 @@
               </b-thead>
               <b-tbody>
                 <b-tr variant="secondary" v-for="(trans, idx) in form.bookingTrans" :key="idx">
-                  <b-th
-                    v-if="idx==0"
-                    :rowspan="form.bookingTrans.length"
-                    style="vertical-align: middle;"
-                  >{{formatter.format(form.amountTaken)}}</b-th>
-
-                  <b-td>{{converteMongoToDate(trans.rcvDate)}}</b-td>
-                  <b-td>{{formatter.format(trans.principle)}}</b-td>
-                  <b-td>{{formatter.format(trans.intrest)}}</b-td>
-                  <b-td
-                    :style="{'color': '#fff','background-color' :Math.sign(trans.pending)>=-0?'#28a745':'#DC3547'}"
-                  >{{formatter.format(-trans.pending)}}</b-td>
+                  <b-td :style="{'color' :idx==(form.bookingTrans.length-1)?'#fff':'#495057','background-color' :idx==(form.bookingTrans.length-1)?'#DC3547':'#e9ecef'}">{{converteMongoToDate(trans.rcvDate)}}</b-td>
+                  <b-td :style="{'color' :idx==(form.bookingTrans.length-1)?'#fff':'#495057','background-color' :idx==(form.bookingTrans.length-1)?'#DC3547':'#e9ecef'}">{{formatter.format(trans.principle)}}</b-td>
+                  <b-td :style="{'color' :idx==(form.bookingTrans.length-1)?'#fff':'#495057','background-color' :idx==(form.bookingTrans.length-1)?'#DC3547':'#e9ecef'}">{{formatter.format(trans.intrest)}}</b-td>
+                  <b-td :style="{'color' :idx==(form.bookingTrans.length-1)?'#fff':'#495057','background-color' :idx==(form.bookingTrans.length-1)?'#DC3547':'#e9ecef'}">{{formatter.format(-trans.pending)}}</b-td>
                 </b-tr>
               </b-tbody>
-              <b-tfoot>
-                <b-tr variant="success">
-                  <b-th style="color:red;font:bold;">{{formatter.format(form.amountTaken)}}</b-th>
-                  <b-td></b-td>
-                  <b-th style="color:red;font:bold;">{{formatter.format(paidPrinciple)}}</b-th>
-                  <b-th style="color:red;font:bold;">{{formatter.format(paidIntrest)}}</b-th>
-                  <b-td></b-td>
-                </b-tr>
-              </b-tfoot>
             </b-table-simple>
           </b-row>
         </b-col>
@@ -285,13 +84,13 @@
 
       <b-row bg-variant="light" style="position:sticky;bottom:0;padding-top:10px;">
         <b-col md style="text-align: center !important">
-          <!-- <b-button variant="primary text-center" @click="print" value="print">Print</b-button>&nbsp;&nbsp; -->
+          <b-button variant="primary text-center" @click="print" value="print">Print</b-button>&nbsp;&nbsp;
           <b-button
-            variant="primary text-center"
-            @click="addRecipt"
-            :disabled="addVal"
+            variant="danger text-center"
+            @click="deleteRecipt"
+             :disabled="form.bookingTrans.length<1"
             value="Create"
-          >Add Recipt</b-button>&nbsp;&nbsp;
+          >Delete Recipt</b-button>&nbsp;&nbsp;
           <b-button
             variant="secondary text-center"
             @click="$router.push({name: 'Recipts', params :{ search: search}})"
@@ -382,7 +181,7 @@ export default {
         remarks: "",
         dueDate: null,
         valueDate: null,
-        createdBy:null
+        createdBy: null
       },
       lastTrans: null,
       search: "",
@@ -404,52 +203,6 @@ export default {
     this.getsSelectedAccount();
   },
   methods: {
-    addDMonths() {
-      if (this.dates.dueMonths < 1) return false;
-      this.dates.nxtDueDate = moment(this.dates.nxtDueDate, "DD/MM/YYYY")
-        .add(this.dates.dueMonths, "months")
-        .format("DD/MM/YYYY");
-    },
-    addVMonths() {
-      if (this.dates.expMonths < 1) return false;
-      this.dates.nxtValueDate = moment(this.dates.nxtValueDate, "DD/MM/YYYY")
-        .add(this.dates.expMonths, "months")
-        .format("DD/MM/YYYY");
-    },
-    givenUpToDate() {
-      if (
-        this.submitForm.intrest == null ||
-        parseInt(this.submitForm.intrest) < 1
-      ) {
-        return false;
-      }
-      let daysDiff;
-      let prin = parseFloat(
-        this.amounts.prinipleBalance.replace(/[, ]+/g, "").trim()
-      );
-      let rate = parseFloat(this.form.intrestRate);
-      let intPerYear = 0.0;
-      if (this.form.intrestType == "RS") {
-        intPerYear = parseFloat(prin * ((rate * 12) / 100));
-      } else {
-        intPerYear = parseFloat(prin * (rate / 100));
-      }
-      let perDay = parseFloat(intPerYear / 360);
-      if (this.lastTrans != null) {
-        daysDiff =
-          (parseFloat(this.submitForm.intrest) +
-            parseFloat(this.lastTrans.pending)) /
-          perDay;
-        this.dates.givenUpTo = moment(this.lastTrans.rcvDate)
-          .add(daysDiff, "days")
-          .format("DD/MM/YYYY");
-      } else {
-        daysDiff = parseFloat(this.submitForm.intrest) / perDay;
-        this.dates.givenUpTo = moment(this.form.bookingDate)
-          .add(daysDiff, "days")
-          .format("DD/MM/YYYY");
-      }
-    },
     print() {
       window.print();
     },
@@ -460,16 +213,14 @@ export default {
       }
       return null;
     },
-    addRecipt() {
+    deleteRecipt() {
       this.attemptSubmit = true;
       let formData = new FormData();
       this.submitForm.brokerNo = this.form.brokerNo;
       this.submitForm.bookingNo = this.form.bookingNo;
+      this.submitForm.transId = this.form.bookingTrans[this.form.bookingTrans.length-1].transId;
       this.submitForm.companyCode = this.$store.state.selectedCompany.value;
       this.submitForm.createdBy = this.$store.state.user.username;
-      this.submitForm.rcvDate = moment(this.reciptDate, "DD/MM/YYYY");
-      this.submitForm.dueDate = moment(this.dates.nxtDueDate, "DD/MM/YYYY");
-      this.submitForm.valueDate = moment(this.dates.nxtValueDate, "DD/MM/YYYY");
       console.log(this.submitForm);
       formData.append("form", JSON.stringify(this.submitForm));
       this.$bvModal
@@ -492,7 +243,7 @@ export default {
               color: "green"
             });
             this.$http
-              .post("/middleware/api/secured/add-recipt", formData)
+              .post("/middleware/api/secured/delete-recipt", formData)
               .then(() => {
                 loader.hide();
                 this.$bvModal
@@ -530,10 +281,6 @@ export default {
         .catch(err => {
           alert(err);
         });
-    },
-    validateEmpty(val) {
-      if (val === "" || val <= 0) return true;
-      else return false;
     },
     getsSelectedAccount() {
       let formData = new FormData();
@@ -725,17 +472,7 @@ export default {
       return converter;
     }
   },
-  computed: {
-    addVal() {
-      if (
-        (this.submitForm.priniple != null && this.submitForm.priniple > 0) ||
-        (this.submitForm.intrest != null && this.submitForm.intrest > 0)
-      ){
-        return false;
-      }
-      return true;
-    },
-  }
+  computed: {}
 };
 </script>
 <style>

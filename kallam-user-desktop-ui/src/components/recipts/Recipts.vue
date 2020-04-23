@@ -61,6 +61,12 @@
                 <b-icon icon="pencil" aria-hidden="true"></b-icon>
                 <span class="sr-only">pencil</span>New Recipt
               </b-button>
+              <b-button
+              :disabled="selected == ''"
+               style="float:right; margin-right:4px"
+                variant="danger" @click="deleteRecipt"
+              >Delete Recipt
+              </b-button>
               <!-- <b-button
                style="float:right; margin-right:4px"
                 variant="primary" @click="$router.push({name: 'CreateBooking', params :{brokerNo: selected[0].brokerNo, search: accountSearch}})"
@@ -184,6 +190,13 @@ export default {
           let companyCode =  this.$store.state.selectedCompany.value;
           console.log(brokerNo,bookingNo,companyCode)
           this.$router.push({name: "NewRecipt", params :{req:{brokerNo, bookingNo,companyCode}, search: this.accountSearch}})
+      },
+      deleteRecipt(){
+          let brokerNo = this.selected[0].brokerNo;
+          let bookingNo = this.selected[0].bookingNo;
+          let companyCode =  this.$store.state.selectedCompany.value;
+          console.log(brokerNo,bookingNo,companyCode)
+          this.$router.push({name: "DeleteRecipt", params :{req:{brokerNo, bookingNo,companyCode}, search: this.accountSearch}})
       },
     onRowSelected(item) {
       this.selected = item;
