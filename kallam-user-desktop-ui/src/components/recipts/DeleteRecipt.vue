@@ -247,7 +247,7 @@ export default {
               .then(() => {
                 loader.hide();
                 this.$bvModal
-                  .msgBoxOk("Booking Account", {
+                  .msgBoxOk("Recipt Deleted", {
                     title: "Confirmation",
                     size: "sm",
                     buttonSize: "sm",

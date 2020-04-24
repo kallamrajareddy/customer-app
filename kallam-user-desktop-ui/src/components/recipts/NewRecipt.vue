@@ -497,7 +497,7 @@ export default {
               .then(() => {
                 loader.hide();
                 this.$bvModal
-                  .msgBoxOk("Booking Account", {
+                  .msgBoxOk("New Recipt Added", {
                     title: "Confirmation",
                     size: "sm",
                     buttonSize: "sm",

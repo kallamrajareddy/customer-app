@@ -296,19 +296,19 @@
           >Make Defaulter</b-button>&nbsp;&nbsp;
           <b-button
             variant="primary text-center"
-            @click="updateBookingAccount"
-            value="Update"
+            @click="updateAccount"
+            value="UpdateBooking"
           >Update & GoTo Booking</b-button>&nbsp;&nbsp;
           <b-button
             variant="primary text-center"
             @click="updateAccount"
             value="Update"
           >Update Account</b-button>&nbsp;&nbsp;
-          <b-button
+          <!-- <b-button
             variant="primary text-center"
             @click="print"
             value="Update"
-          >Print</b-button>&nbsp;&nbsp;
+          >Print</b-button>&nbsp;&nbsp; -->
           <b-button
             variant="secondary text-center"
             @click="$router.push({name: 'Account', params :{search: search}})"
@@ -723,10 +723,8 @@ export default {
       this.nameState = valid;
       return valid;
     },
-    updateBookingAccount(){
-
-    },
     updateAccount() {
+       let val  = event.srcElement.value;
       if (!this.checkFormValidity()) {
         return;
       }
@@ -773,7 +771,14 @@ export default {
                     centered: true
                   })
                   .then(value => {
-                    if (value) this.getsSelectedAccount();
+                     if (value){
+                      if(val == "Update"){
+                        this.getsSelectedAccount();
+                       }else if(val == "UpdateBooking"){
+                         let brokerNo = this.form.brokerNo;
+                          this.$router.push({name: "BookingsView", params :{brokerNo: brokerNo, search: this.accountSearch}})
+                       }
+                     }
                   })
                   .catch(err => {
                     alert(err);
