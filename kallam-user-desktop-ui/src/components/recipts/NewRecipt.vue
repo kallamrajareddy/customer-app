@@ -304,7 +304,8 @@
 </template>
 
 <script>
-import converter from "number-to-words";
+//import converter from "number-to-words";
+import converter from 'number-into-words';
 import moment from "moment";
 export default {
   data() {
@@ -392,7 +393,7 @@ export default {
   filters: {
     toWords: function(value) {
       if (!value) return "";
-      return converter.toWords(value).toUpperCase();
+      return converter.indianConversion(value, {characterCase: 'UPPERCASE'});
     }
   },
   created() {
@@ -537,7 +538,7 @@ export default {
     },
     getsSelectedAccount() {
       let formData = new FormData();
-
+if(this.req.brokerNo == null || this.req.bookingNo == null)this.$router.push("/recipts");
       formData.append("form", JSON.stringify(this.req));
       let loader = this.$loading.show({
         loader: "bars",

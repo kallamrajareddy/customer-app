@@ -322,7 +322,12 @@
               @click="createBooking"
               value="Create"
             >Create Booking</b-button>&nbsp;&nbsp;
-            <b-button variant="danger text-center" @click="reload" value="Reset">Reset</b-button>&nbsp;&nbsp;
+            <b-button
+              variant="primary text-center"
+              @click="createBooking"
+              value="newRecipt"
+            >Create & New Recipt</b-button>&nbsp;&nbsp;
+            <!-- <b-button variant="danger text-center" @click="reload" value="Reset">Reset</b-button>&nbsp;&nbsp; -->
             <b-button
               variant="secondary text-center"
               @click="$router.go(-1)"
@@ -337,7 +342,8 @@
 
 <script>
 import Multiselect from "vue-multiselect";
-import converter from "number-to-words";
+//import converter from "number-to-words";
+import converter from 'number-into-words';
 import moment from "moment";
 export default {
   components: { Multiselect },
@@ -415,7 +421,7 @@ export default {
   filters: {
     toWords: function(value) {
       if (!value) return "";
-      return converter.toWords(value).toUpperCase();
+      converter.indianConversion(value, {characterCase: 'UPPERCASE'});
     }
   },
   created() {
@@ -428,6 +434,7 @@ export default {
   },
   methods: {
     createBooking() {
+       let val = event.srcElement.value;
       this.attemptSubmit=true;
       //console.log(this.form)
       
@@ -461,6 +468,7 @@ export default {
               .post("/middleware/api/secured/create-booking", formData)
               .then(() => {
                 loader.hide();
+                
                 this.$bvModal
                   .msgBoxOk("Booking Account", {
                     title: "Confirmation",
@@ -472,7 +480,17 @@ export default {
                     centered: true
                   })
                   .then(value => {
-                    if (value) this.$router.push({name: "BookingsView", params :{brokerNo: this.form.brokerNo, search: this.search}})
+                    if (value){
+                      if(val == "Create"){
+                        this.$router.push({name: "BookingsView", params :{brokerNo: this.form.brokerNo, search: this.search}});
+                  
+                          }
+                       } else if(val == "newRecipt"){
+                              let brokerNo = this.form.brokerNo;
+                              let bookingNo = this.form.bookingNo;
+                              let companyCode =  this.form.companyCode;
+                              this.$router.push({name: "NewRecipt", params :{req:{brokerNo, bookingNo,companyCode}, search: this.accountSearch}})
+                          }
                   })
                   .catch(err => {
                     alert(err);

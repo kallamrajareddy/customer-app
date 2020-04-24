@@ -284,7 +284,7 @@ export default {
     },
     getsSelectedAccount() {
       let formData = new FormData();
-
+if(this.req.brokerNo == null || this.req.bookingNo == null)this.$router.push("/recipts");
       formData.append("form", JSON.stringify(this.req));
       let loader = this.$loading.show({
         loader: "bars",

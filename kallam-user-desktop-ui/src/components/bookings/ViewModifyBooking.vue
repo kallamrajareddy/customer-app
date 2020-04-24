@@ -97,7 +97,7 @@
                 id="bookingNo"
                 v-model="form.bookings.bookingNo"
                 required
-                :disabled="displayFlg"
+                disabled
                 v-bind:class="{ 'is-invalid': attemptSubmit && bookingNoVal }"
               ></b-form-input>
             </b-form-group>
@@ -253,7 +253,7 @@
           </b-col>
         </b-row>
         <b-row>
-          <b-col md>
+          <b-col md="2">
             <b-form-group
               id="amountTakenLbl"
               label="Issue Amount"
@@ -271,7 +271,7 @@
               ></b-form-input>
             </b-form-group>
           </b-col>
-          <b-col md>
+          <b-col md="1">
             <b-form-group label="Intrest Type">
               <b-form-radio-group
                 id="radio-group-1"
@@ -308,13 +308,31 @@
               <b-form-input id="purity" :disabled="displayFlg" type="number" v-model="form.bookings.purity"></b-form-input>
             </b-form-group>
           </b-col>
-          <b-col md class="col-padding-margin-right">
+          <b-col md="1" v-if="displayFlg">
+            <b-form-group label="Auctioned"  label-for="auctioned">
+              <b-form-checkbox
+                id="auctioned"
+                v-model="form.bookings.auctioned"
+                :disabled="displayFlg"
+              ></b-form-checkbox>
+            </b-form-group>
+          </b-col>
+          <b-col md="1"  v-if="displayFlg">
+            <b-form-group label="Closed"  label-for="closed">
+              <b-form-checkbox
+                id="closed"
+                v-model="form.bookings.closed"
+                :disabled="displayFlg"
+              ></b-form-checkbox>
+            </b-form-group>
+          </b-col>
+          <b-col md="2" class="col-padding-margin-right">
             <label for="dob">Due Date</label>
             <b-input-group>
               <date-picker :disabled="form.bookings.closed || form.bookings.auctioned" v-model="dueDate" :config="options" placeholder="DD/MM/YYYY"></date-picker>
             </b-input-group>
           </b-col>
-          <b-col md class="col-padding-margin-right">
+          <b-col md="2" class="col-padding-margin-right">
             <label for="dob">Expiery Date</label>
             <b-input-group>
               <date-picker :disabled="form.bookings.closed || form.bookings.auctioned"  v-model="valueDate" :config="options" placeholder="DD/MM/YYYY"></date-picker>
@@ -332,18 +350,11 @@
             </span>
           </b-col>
         </b-row>
-        <b-row v-if="form.bookings.bookingTrans.length>0">
+        <!-- <b-row v-if="form.bookings.bookingTrans.length>0">
             <b-table-simple hover small caption-top responsive>
-    <!-- <caption>Items sold in August, grouped by Country and City:</caption> -->
-    <!-- <colgroup><col><col></colgroup>
-    <colgroup><col><col><col></colgroup>
-    <colgroup><col><col></colgroup> -->
+    
     <b-thead head-variant="dark">
-      <!-- <b-tr>
-        <b-th colspan="2">Region</b-th>
-        <b-th colspan="3">Clothes</b-th>
-        <b-th colspan="2">Accessories</b-th>
-      </b-tr> -->
+      
       <b-tr>
         <b-th>Principle Amount</b-th>
         <b-th>Transaction Date</b-th>
@@ -360,8 +371,7 @@
         <b-td>{{formatter.format(trans.principle)}}</b-td>
         <b-td>{{formatter.format(trans.intrest)}}</b-td>
         <b-td  :style="{'color': '#fff','background-color' :Math.sign(trans.pending)>=-0?'#28a745':'#DC3547'}">{{formatter.format(trans.pending)}}</b-td>
-        <!-- <b-td variant="success">72</b-td>
-        <b-td>23</b-td> -->
+       
       </b-tr>
     </b-tbody>
     <b-tfoot>
@@ -376,14 +386,21 @@
       </b-tr>
     </b-tfoot>
   </b-table-simple>
-        </b-row>
+        </b-row> -->
         <b-row bg-variant="light" style="position:sticky;bottom:0;padding-top:10px;">
           <b-col md style="text-align: center !important">
             <b-button
               variant="primary text-center"
-              @click="$router.push({name: 'CreateBooking', params :{brokerNo: form.brokerNo, search: form.brokerNo}})"
-              value="Create"
-            >Create Booking</b-button>&nbsp;&nbsp;
+              @click="updateBooking"
+               v-if="!form.bookings.closed && form.bookings.bookingTrans.length<1"
+              value="Update"
+            >Update Booking</b-button>&nbsp;&nbsp;
+            <b-button
+              variant="primary text-center"
+              @click="createRecipt"
+              value="newRecipt"
+              v-if="!form.bookings.closed"
+            >New Recipt</b-button>&nbsp;&nbsp;
             <b-button
               variant="secondary text-center"
                @click="$router.push({name: 'BookingsView', params :{brokerNo: form.brokerNo, search: form.brokerNo}})"
@@ -398,7 +415,8 @@
 
 <script>
 import Multiselect from "vue-multiselect";
-import converter from "number-to-words";
+//import converter from "number-to-words";
+import converter from 'number-into-words';
 import moment from "moment";
 export default {
   components: { Multiselect },
@@ -460,6 +478,8 @@ export default {
           grossWeight: 0.0,
           netWeight: 0.0,
           purity: null,
+          closed:false,
+          auctioned: false,
           intrestRate: null,
           dueDate: null,
           valueDate: null,
@@ -481,11 +501,12 @@ export default {
   filters: {
     toWords: function(value) {
       if (!value) return "";
-      return converter.toWords(value).toUpperCase();
+      return converter.indianConversion(value, {characterCase: 'UPPERCASE'});
     }
   },
   created() {
     this.req = this.$route.params.req;
+    this.search = this.$route.params.search;
   },
   mounted() {
        this.formatter = new Intl.NumberFormat('en-US', {
@@ -496,6 +517,13 @@ export default {
     this.getsSelectedAccount();
   },
   methods: {
+    createRecipt(){
+          let brokerNo = this.form.brokerNo;
+          let bookingNo = this.form.bookings.bookingNo;
+          let companyCode =  this.$store.state.selectedCompany.value;
+          console.log(brokerNo,bookingNo,companyCode)
+          this.$router.push({name: "NewRecipt", params :{req:{brokerNo, bookingNo,companyCode}, search: this.search }})
+      },
       converteMongoToDate(dateObject) {
       //{  "month": "AUGUST",  "year": 1960,  "dayOfMonth": 5,  "hour": 5,  "minute": 30,  "second": 0}
       if (dateObject != null && dateObject && dateObject != "") {
@@ -508,18 +536,37 @@ export default {
       }
       return null;
     },
-    createBooking() {
+    updateBooking() {
+      let val  = event.srcElement.value;
       this.attemptSubmit = true;
-      //console.log(this.form);
-
-      // if (!this.checkFormValidity()) {
-      //   return;
-      // }
+      debugger;
+      this.$event.srcElement;
+     const updateBooking =  {
+        brokerNo: this.form.brokerNo,
+        companyCode: this.$store.state.selectedCompany.value,
+        bookingDate: this.form.bookings.bookingDate,
+        bookingNo: this.form.bookings.bookingNo,
+        tranType: this.form.bookings.tranType,
+        grossWeight: this.form.bookings.grossWeight,
+        netWeight:this.form.bookings.netWeight,        
+        purity: this.form.bookings.purity,
+        intrestRate: this.form.bookings.intrestRate,
+        dueDate: this.form.bookings.dueDate,
+        valueDate: this.form.bookings.valueDate,
+        loanType: this.form.bookings.loanType,
+        remarks: this.form.bookings.remarks,
+        amountTaken: this.form.bookings.amountTaken,
+        intrestType: this.form.bookings.intrestType,
+        items: this.form.bookings.items,
+        createdBy: null,
+        updatedBy: this.$store.state.user.username,
+        bookingTrans: [],
+      }
       let formData = new FormData();
-      this.form.updatedBy = this.$store.state.user.username;
-      formData.append("form", JSON.stringify(this.form));
+      formData.append("form", JSON.stringify(updateBooking));
+      console.log(updateBooking);
       this.$bvModal
-        .msgBoxConfirm("Please confirm that you want to Create New Booking.", {
+        .msgBoxConfirm("Please confirm that you want to Update Booking.", {
           title: "Confirmation",
           size: "sm",
           buttonSize: "sm",
@@ -538,11 +585,11 @@ export default {
               color: "green"
             });
             this.$http
-              .post("/middleware/api/secured/create-booking", formData)
+              .post("/middleware/api/secured/update-booking", formData)
               .then(() => {
                 loader.hide();
                 this.$bvModal
-                  .msgBoxOk("Booking Account", {
+                  .msgBoxOk("Booking Booking Updated", {
                     title: "Confirmation",
                     size: "sm",
                     buttonSize: "sm",
@@ -552,14 +599,18 @@ export default {
                     centered: true
                   })
                   .then(value => {
-                    if (value)
-                      this.$router.push({
-                        name: "BookingsView",
-                        params: {
-                          brokerNo: this.form.brokerNo,
-                          search: this.search
-                        }
-                      });
+                    if (value){
+                      if(val == "Update"){
+                        this.$router.push({name: "BookingsView", params :{brokerNo: this.form.brokerNo, search: this.search}});
+                  
+                          }
+                          // else if(val == "newRecipt"){
+                          //     let brokerNo = updateBooking.brokerNo;
+                          //     let bookingNo = updateBooking.bookingNo;
+                          //     let companyCode =  updateBooking.companyCode;
+                          //     this.$router.push({name: "NewRecipt", params :{req:{brokerNo, bookingNo,companyCode}, search: this.accountSearch}})
+                          // }
+                       }
                   })
                   .catch(err => {
                     alert(err);
@@ -584,7 +635,7 @@ export default {
     },
     getsSelectedAccount() {
       let formData = new FormData();
-
+      if(this.req.brokerNo == null || this.req.bookingNo == null)this.$router.push("/bookings");
       formData.append("form", JSON.stringify(this.req));
       let loader = this.$loading.show({
         loader: "bars",
@@ -607,32 +658,32 @@ export default {
             if(response.data.bookings.bookingTrans.length>0){
                 this.displayFlg = true;
                  response.data.bookings.bookingTrans.sort((a,b)=> moment(a.rcvDate)-moment(b.rcvDate))
-                 response.data.bookings.bookingTrans.forEach((trans, idx)=>{
-                this.paidPrinciple +=parseFloat(trans.principle);
-                 this.paidIntrest +=parseFloat(trans.intrest);
-                 let  daysDiff;
-                 let prin = parseFloat(response.data.bookings.amountTaken);
-                 let rate = parseFloat(response.data.bookings.intrestRate);
-                let intPerYear = parseFloat(prin*((rate*12)/100));
-                let perDay =  parseFloat(intPerYear/360);
-                let actualIntrest;
-                 if(idx == 0){
-                   daysDiff = moment(trans.rcvDate).diff(moment(response.data.bookings.bookingDate), "days");
-                    actualIntrest = parseFloat(daysDiff*perDay);
-                   trans.pending =  parseFloat(parseFloat(trans.intrest)-actualIntrest);
-                 }else{
-                   let paidTotal = parseFloat(0.00);
-                   for(let i = (idx-1); i>=0; i--){
-                     paidTotal += parseFloat( response.data.bookings.bookingTrans[i].principle);
-                   }
-                     prin = parseFloat(response.data.bookings.amountTaken) - parseFloat(paidTotal);
-                     daysDiff = moment(trans.rcvDate).diff(moment(response.data.bookings.bookingTrans[idx-1].rcvDate), "days");
-                     intPerYear = parseFloat(prin*((rate*12)/100));
-                     perDay =  parseFloat(intPerYear/360);
-                     actualIntrest = parseFloat(daysDiff*perDay) - parseFloat(response.data.bookings.bookingTrans[idx-1].pending);
-                     trans.pending =  parseFloat(parseFloat(trans.intrest)-actualIntrest);
-                 }
-                })
+                //  response.data.bookings.bookingTrans.forEach((trans, idx)=>{
+                // this.paidPrinciple +=parseFloat(trans.principle);
+                //  this.paidIntrest +=parseFloat(trans.intrest);
+                //  let  daysDiff;
+                //  let prin = parseFloat(response.data.bookings.amountTaken);
+                //  let rate = parseFloat(response.data.bookings.intrestRate);
+                // let intPerYear = parseFloat(prin*((rate*12)/100));
+                // let perDay =  parseFloat(intPerYear/360);
+                // let actualIntrest;
+                //  if(idx == 0){
+                //    daysDiff = moment(trans.rcvDate).diff(moment(response.data.bookings.bookingDate), "days");
+                //     actualIntrest = parseFloat(daysDiff*perDay);
+                //    trans.pending =  parseFloat(parseFloat(trans.intrest)-actualIntrest);
+                //  }else{
+                //    let paidTotal = parseFloat(0.00);
+                //    for(let i = (idx-1); i>=0; i--){
+                //      paidTotal += parseFloat( response.data.bookings.bookingTrans[i].principle);
+                //    }
+                //      prin = parseFloat(response.data.bookings.amountTaken) - parseFloat(paidTotal);
+                //      daysDiff = moment(trans.rcvDate).diff(moment(response.data.bookings.bookingTrans[idx-1].rcvDate), "days");
+                //      intPerYear = parseFloat(prin*((rate*12)/100));
+                //      perDay =  parseFloat(intPerYear/360);
+                //      actualIntrest = parseFloat(daysDiff*perDay) - parseFloat(response.data.bookings.bookingTrans[idx-1].pending);
+                //      trans.pending =  parseFloat(parseFloat(trans.intrest)-actualIntrest);
+                //  }
+                // })
                 
             }
            
