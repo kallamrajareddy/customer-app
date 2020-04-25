@@ -521,7 +521,7 @@ export default {
           let brokerNo = this.form.brokerNo;
           let bookingNo = this.form.bookings.bookingNo;
           let companyCode =  this.$store.state.selectedCompany.value;
-          console.log(brokerNo,bookingNo,companyCode)
+         // console.log(brokerNo,bookingNo,companyCode)
           this.$router.push({name: "NewRecipt", params :{req:{brokerNo, bookingNo,companyCode}, search: this.search }})
       },
       converteMongoToDate(dateObject) {
@@ -539,7 +539,6 @@ export default {
     updateBooking() {
       let val  = event.srcElement.value;
       this.attemptSubmit = true;
-      debugger;
       this.$event.srcElement;
      const updateBooking =  {
         brokerNo: this.form.brokerNo,
@@ -564,7 +563,7 @@ export default {
       }
       let formData = new FormData();
       formData.append("form", JSON.stringify(updateBooking));
-      console.log(updateBooking);
+     // console.log(updateBooking);
       this.$bvModal
         .msgBoxConfirm("Please confirm that you want to Update Booking.", {
           title: "Confirmation",

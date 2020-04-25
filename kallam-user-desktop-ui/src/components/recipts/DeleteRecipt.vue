@@ -221,7 +221,7 @@ export default {
       this.submitForm.transId = this.form.bookingTrans[this.form.bookingTrans.length-1].transId;
       this.submitForm.companyCode = this.$store.state.selectedCompany.value;
       this.submitForm.createdBy = this.$store.state.user.username;
-      console.log(this.submitForm);
+     // console.log(this.submitForm);
       formData.append("form", JSON.stringify(this.submitForm));
       this.$bvModal
         .msgBoxConfirm("Please confirm that you want New Recipt.", {

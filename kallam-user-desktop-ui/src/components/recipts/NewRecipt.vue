@@ -471,7 +471,7 @@ export default {
       this.submitForm.rcvDate = moment(this.reciptDate, "DD/MM/YYYY");
       this.submitForm.dueDate = moment(this.dates.nxtDueDate, "DD/MM/YYYY");
       this.submitForm.valueDate = moment(this.dates.nxtValueDate, "DD/MM/YYYY");
-      console.log(this.submitForm);
+      //console.log(this.submitForm);
       formData.append("form", JSON.stringify(this.submitForm));
       this.$bvModal
         .msgBoxConfirm("Please confirm that you want New Recipt.", {

@@ -188,14 +188,14 @@ export default {
           let brokerNo = this.selected[0].brokerNo;
           let bookingNo = this.selected[0].bookingNo;
           let companyCode =  this.$store.state.selectedCompany.value;
-          console.log(brokerNo,bookingNo,companyCode)
+          //console.log(brokerNo,bookingNo,companyCode)
           this.$router.push({name: "NewRecipt", params :{req:{brokerNo, bookingNo,companyCode}, search: this.accountSearch}})
       },
       deleteRecipt(){
           let brokerNo = this.selected[0].brokerNo;
           let bookingNo = this.selected[0].bookingNo;
           let companyCode =  this.$store.state.selectedCompany.value;
-          console.log(brokerNo,bookingNo,companyCode)
+          //console.log(brokerNo,bookingNo,companyCode)
           this.$router.push({name: "DeleteRecipt", params :{req:{brokerNo, bookingNo,companyCode}, search: this.accountSearch}})
       },
     onRowSelected(item) {
