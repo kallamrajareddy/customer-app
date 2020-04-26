@@ -47,6 +47,14 @@ module.exports = {
                 changeOrigin: true,
                 logLevel: "debug"
             },
+            '^/images': {
+                // target: 'http://localhost:8080/oauth/token',
+                target: "http://localhost:8182",
+                pathRewrite: { "^/images": "/images" }, // this configuration needs to correspond to the Spring Boot backends' application.properties server.port
+                ws: true,
+                changeOrigin: true,
+                logLevel: "debug"
+            },
             // '^/middleware/api/secured/get-broker-Lst': {
             //     // target: 'http://localhost:8080/oauth/token',
             //     target: "http://localhost:9002",

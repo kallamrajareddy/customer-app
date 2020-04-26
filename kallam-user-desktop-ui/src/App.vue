@@ -62,7 +62,7 @@
         <b-navbar-nav class="ml-auto" v-if="isLoggedIn">
           <b-dropdown variant="primary">
             <template v-slot:button-content>
-              <b-avatar :src="'http://localhost:8182/images/'
+              <b-avatar :src="'/images/'
               +username+'.jpg'"></b-avatar>
               {{username}}
             </template>

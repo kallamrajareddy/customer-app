@@ -46,12 +46,18 @@
           size="sm"
           :readonly="totalRows<1"
           v-model="filter"
-          placeholder="🔍  Search Pending..."
+          placeholder="🔍  Search..."
           style="margin-right:10px;display: inline-flex;"
         ></b-form-input>
             </b-col>
             <b-col md="6" style="padding-right: 0px;">
-               
+               <b-button
+               style="float:right; margin-left:4px"
+               :disabled="selected == ''"
+               @click="editBookings"
+                variant="primary" 
+              >GoTo Booking
+              </b-button>
                 <b-button
                style="float:right;"
                 variant="primary"
@@ -66,13 +72,6 @@
                 variant="primary" @click="$router.push('/createAccount')"
               >Create Account
               </b-button>
-               <b-button
-               style="float:right; margin-right:4px"
-               :disabled="selected == ''"
-               @click="editBookings"
-                variant="primary" 
-              >GoTo Booking
-              </b-button>
             </b-col>
             </b-row>
          
@@ -86,6 +85,7 @@
             select-mode="single"
             :items="items"
             :fields="fields"
+            @filtered="onFiltered"
             @row-selected="onRowSelected"
             sticky-header="true"
             responsive
@@ -126,7 +126,7 @@
             <template v-slot:cell(image)="data">
               <div >
                    
-                <b-avatar class="align-baseline" style="backgroundcolor" @click="openImage(data.item.brokerNo)" :src="'http://localhost:8182/images/'
+                <b-avatar class="align-baseline" style="backgroundcolor" @click="openImage(data.item.brokerNo)" :src="'/images/'
               +data.item.brokerNo+'.jpg'"></b-avatar>
               <span
                 v-if="(data.item.bookings.find(booking => booking.closed !== true) != undefined)"
@@ -152,7 +152,7 @@
     <b-modal id="modal-image" ref="imageModal" size="sm" hide-header hide-footer>
           <b-row>
               <b-col>
-                  <b-img :src="'http://localhost:8182/images/'
+                  <b-img :src="'/images/'
               +showImg+'.jpg'"  thumbnail  fluid alt="Fluid image"></b-img>
               </b-col>
           </b-row>
@@ -174,7 +174,7 @@ export default {
     return {
       selected: "",
       showImg: "",
-       filter: null,
+      filter: null,
       totalRows: 0,
       accountSearch: null,
       fields: [

@@ -110,7 +110,7 @@ export default {
         this.$router.push("/logout");
       }
       this.$bvModal.hide("modal-company");
-      this.$router.push("/create-booking");
+      this.$router.push("/bookings");
     },
     login: function() {
       let username = this.email;
@@ -137,7 +137,7 @@ export default {
                       comp => comp.value === this.$store.state.user.assComp
                     );
                     this.$store.dispatch("userComp", select);
-                    this.$router.push("/create-booking");
+                    this.$router.push("/bookings");
                   }
                 })
                 .catch(err => {

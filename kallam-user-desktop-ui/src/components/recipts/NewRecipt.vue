@@ -46,7 +46,7 @@
       <b-row>
         <b-col md="2" class="col-padding-margin-right">
           <b-form-group id="reciptDateLbl" label="Recipt Date" label-for="reciptDate">
-            <date-picker v-model="reciptDate" :config="options" placeholder="DD/MM/YYYY"></date-picker>
+            <date-picker v-model="reciptDate" @dp-hide="finalIntrestCal"  @dp-change="finalIntrestCal" :config="options" placeholder="DD/MM/YYYY"></date-picker>
           </b-form-group>
         </b-col>
 
@@ -175,19 +175,25 @@
                 <b-tr>
                   <b-th style="border-top:0px">Amount</b-th>
                   <b-td style="border-top:0px">
-                    <b-form-input id="actualAmount" disabled v-model="amounts.actualAmount"></b-form-input>
+                    <b-form-input id="actualAmount" disabled
+                    :value="formatter.format(Math.round(amounts.actualAmount))"
+                    ></b-form-input>
                   </b-td>
                   <b-th style="border-top:0px"></b-th>
                   <b-td style="border-top:0px"></b-td>
                   <b-th style="border-top:0px">Principle Bal</b-th>
                   <b-td style="border-top:0px">
-                    <b-form-input id="prinipleBalance" disabled v-model="amounts.prinipleBalance"></b-form-input>
+                    <b-form-input id="prinipleBalance" disabled
+                    :value="formatter.format(Math.round(amounts.prinipleBalance))"
+                    ></b-form-input>
                   </b-td>
                 </b-tr>
                 <b-tr>
                   <b-th style="border-top:0px">Intrest</b-th>
                   <b-td style="border-top:0px">
-                    <b-form-input id="intrestTilDate" disabled v-model="amounts.intrestTilDate"></b-form-input>
+                    <b-form-input id="intrestTilDate" disabled
+                    :value="formatter.format(Math.round(amounts.intrestTilDate))"
+                    ></b-form-input>
                   </b-td>
                   <b-th style="border-top:0px">Booking Date</b-th>
                   <b-td style="border-top:0px">
@@ -195,7 +201,9 @@
                   </b-td>
                   <b-th style="border-top:0px">Intrest Bal</b-th>
                   <b-td style="border-top:0px">
-                    <b-form-input id="intrestBalance" disabled v-model="amounts.intrestBalance"></b-form-input>
+                    <b-form-input id="intrestBalance" disabled 
+                    :value="formatter.format(Math.round(amounts.intrestBalance))"
+                    ></b-form-input>
                   </b-td>
                 </b-tr>
                 <b-tr>
@@ -205,7 +213,7 @@
                       id="priniplePaidTil"
                       type="number"
                       disabled
-                      v-model="amounts.priniplePaidTil"
+                      :value="formatter.format(Math.round(amounts.priniplePaidTil))"
                     ></b-form-input>
                   </b-td>
                   <b-th style="border-top:0px">Days</b-th>
@@ -217,7 +225,7 @@
                     <b-form-input
                       id="totalBalance"
                       disabled
-                      v-model="amounts.totalBalance"
+                      :value="formatter.format(Math.round(amounts.totalBalance))"
                       style="color:red"
                     ></b-form-input>
                   </b-td>
@@ -228,7 +236,7 @@
                     <b-form-input
                       id="intrestPaidTil"
                       disabled
-                      v-model="amounts.intrestPaidTil"
+                      :value="formatter.format(Math.round(amounts.intrestPaidTil))"
                       style="color:red"
                     ></b-form-input>
                   </b-td>
@@ -262,19 +270,19 @@
                   >{{formatter.format(form.amountTaken)}}</b-th>
 
                   <b-td>{{converteMongoToDate(trans.rcvDate)}}</b-td>
-                  <b-td>{{formatter.format(trans.principle)}}</b-td>
-                  <b-td>{{formatter.format(trans.intrest)}}</b-td>
+                  <b-td>{{formatter.format(Math.round(trans.principle))}}</b-td>
+                  <b-td>{{formatter.format(Math.round(trans.intrest))}}</b-td>
                   <b-td
                     :style="{'color': '#fff','background-color' :Math.sign(trans.pending)>=-0?'#28a745':'#DC3547'}"
-                  >{{formatter.format(-trans.pending)}}</b-td>
+                  >{{formatter.format(Math.round(-trans.pending))}}</b-td>
                 </b-tr>
               </b-tbody>
               <b-tfoot>
                 <b-tr variant="success">
-                  <b-th style="color:red;font:bold;">{{formatter.format(form.amountTaken)}}</b-th>
+                  <b-th style="color:red;font:bold;">{{formatter.format(Math.round(form.amountTaken))}}</b-th>
                   <b-td></b-td>
-                  <b-th style="color:red;font:bold;">{{formatter.format(paidPrinciple)}}</b-th>
-                  <b-th style="color:red;font:bold;">{{formatter.format(paidIntrest)}}</b-th>
+                  <b-th style="color:red;font:bold;">{{formatter.format(Math.round(paidPrinciple))}}</b-th>
+                  <b-th style="color:red;font:bold;">{{formatter.format(Math.round(paidIntrest))}}</b-th>
                   <b-td></b-td>
                 </b-tr>
               </b-tfoot>
@@ -625,73 +633,8 @@ if(this.req.brokerNo == null || this.req.bookingNo == null)this.$router.push("/r
               moment(response.data.bookingDate),
               "days"
             );
-            this.amounts.actualAmount = parseFloat(response.data.amountTaken);
-            this.amounts.priniplePaidTil = parseFloat(this.paidPrinciple);
-            this.amounts.intrestPaidTil = parseFloat(this.paidIntrest);
-            this.amounts.prinipleBalance =
-              parseFloat(response.data.amountTaken) -
-              parseFloat(this.paidPrinciple);
-            let intPerYear = 0.0;
-            let rate = parseFloat(response.data.intrestRate);
-            let daysDiff = 0;
-            let pendingBal = parseFloat(0.0);
-            if (response.data.intrestType == "RS") {
-              intPerYear = parseFloat(
-                (parseFloat(response.data.amountTaken) -
-                  parseFloat(this.paidPrinciple)) *
-                  ((rate * 12) / 100)
-              );
-            } else {
-              intPerYear = parseFloat(
-                (parseFloat(response.data.amountTaken) -
-                  parseFloat(this.paidPrinciple)) *
-                  (rate / 100)
-              );
-            }
-
-            let perDay = parseFloat(intPerYear / 360);
-            if (this.lastTrans != null) {
-              daysDiff = moment().diff(moment(this.lastTrans.rcvDate), "days");
-              pendingBal = parseFloat(this.lastTrans.pending);
-            } else {
-              daysDiff = moment().diff(
-                moment(response.data.bookingDate),
-                "days"
-              );
-            }
-            this.amounts.intrestTilDate =
-              parseFloat(this.paidIntrest) +
-              parseFloat(daysDiff * perDay) -
-              pendingBal;
-            this.amounts.intrestBalance =
-              parseFloat(this.amounts.intrestTilDate) -
-              parseFloat(this.paidIntrest);
-            this.amounts.totalBalance =
-              parseFloat(this.amounts.intrestBalance) +
-              parseFloat(this.amounts.prinipleBalance);
-
-            this.amounts.intrestBalance = this.formatter.format(
-              this.amounts.intrestBalance
-            );
-            this.amounts.totalBalance = this.formatter.format(
-              this.amounts.totalBalance
-            );
-            this.amounts.intrestTilDate = this.formatter.format(
-              this.amounts.intrestTilDate
-            );
-            this.amounts.actualAmount = this.formatter.format(
-              this.amounts.actualAmount
-            );
-            this.amounts.priniplePaidTil = this.formatter.format(
-              this.amounts.priniplePaidTil
-            );
-            this.amounts.intrestPaidTil = this.formatter.format(
-              this.amounts.intrestPaidTil
-            );
-            this.amounts.prinipleBalance = this.formatter.format(
-              this.amounts.prinipleBalance
-            );
             this.form = response.data;
+            this.finalIntrestCal();
           } else {
             this.$bvModal
               .msgBoxOk("Please select proper user", {
@@ -718,6 +661,73 @@ if(this.req.brokerNo == null || this.req.bookingNo == null)this.$router.push("/r
         .finally(function() {
           // always executed
         });
+    },
+    finalIntrestCal(){
+            this.amounts.actualAmount = parseFloat(this.form.amountTaken);
+            this.amounts.priniplePaidTil = parseFloat(this.paidPrinciple);
+            this.amounts.intrestPaidTil = parseFloat(this.paidIntrest);
+            this.amounts.prinipleBalance =
+              parseFloat(this.form.amountTaken) -
+              parseFloat(this.paidPrinciple);
+            let intPerYear = 0.0;
+            let rate = parseFloat(this.form.intrestRate);
+            let daysDiff = 0;
+            let pendingBal = parseFloat(0.0);
+            if (this.form.intrestType == "RS") {
+              intPerYear = parseFloat(
+                (parseFloat(this.form.amountTaken) -
+                  parseFloat(this.paidPrinciple)) *
+                  ((rate * 12) / 100)
+              );
+            } else {
+              intPerYear = parseFloat(
+                (parseFloat(this.form.amountTaken) -
+                  parseFloat(this.paidPrinciple)) *
+                  (rate / 100)
+              );
+            }
+            let perDay = parseFloat(intPerYear / 360);
+            if (this.lastTrans != null) {
+              daysDiff = moment(this.reciptDate, "DD/MM/YYYY").diff(moment(this.lastTrans.rcvDate), "days");
+              pendingBal = parseFloat(this.lastTrans.pending);
+            } else {
+              daysDiff = moment(this.reciptDate, "DD/MM/YYYY").diff(
+                moment(this.form.bookingDate),
+                "days"
+              );
+            }
+            this.amounts.intrestTilDate =
+              parseFloat(this.paidIntrest) +
+              parseFloat(daysDiff * perDay) -
+              pendingBal;
+            this.amounts.intrestBalance =
+              parseFloat(this.amounts.intrestTilDate) -
+              parseFloat(this.paidIntrest);
+            this.amounts.totalBalance =
+              parseFloat(this.amounts.intrestBalance) +
+              parseFloat(this.amounts.prinipleBalance);
+
+            // this.amounts.intrestBalance = this.formatter.format(
+            //   this.amounts.intrestBalance
+            // );
+            // this.amounts.totalBalance = this.formatter.format(
+            //   this.amounts.totalBalance
+            // );
+            // this.amounts.intrestTilDate = this.formatter.format(
+            //   this.amounts.intrestTilDate
+            // );
+            // this.amounts.actualAmount = this.formatter.format(
+            //   this.amounts.actualAmount
+            // );
+            // this.amounts.priniplePaidTil = this.formatter.format(
+            //   this.amounts.priniplePaidTil
+            // );
+            // this.amounts.intrestPaidTil = this.formatter.format(
+            //   this.amounts.intrestPaidTil
+            // );
+            // this.amounts.prinipleBalance = this.formatter.format(
+            //   this.amounts.prinipleBalance
+            // );
     },
     reload() {
       window.location.reload(true);

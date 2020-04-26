@@ -91,6 +91,7 @@
             select-mode="single"
             :items="items"
             :fields="fields"
+            @filtered="onFiltered"
             @row-selected="onRowSelected"
             sticky-header="true"
             responsive
@@ -109,7 +110,7 @@
              <template v-slot:cell(image)="data">
               <div >
                    
-                <b-avatar class="align-baseline"  @click="openImage(data.item.brokerNo)" :src="'http://localhost:8182/images/'
+                <b-avatar class="align-baseline"  @click="openImage(data.item.brokerNo)" :src="'/images/'
               +data.item.brokerNo+'.jpg'"></b-avatar>
               <span
                 v-if="(data.item.activeCount > 0)"
@@ -125,7 +126,7 @@
     <b-modal id="modal-image" ref="imageModal" size="sm" hide-header hide-footer>
           <b-row>
               <b-col>
-                  <b-img :src="'http://localhost:8182/images/'
+                  <b-img :src="'/images/'
               +showImg+'.jpg'"  thumbnail  fluid alt="Fluid image"></b-img>
               </b-col>
           </b-row>

@@ -22,11 +22,6 @@
             <b-form-input id="brokerName" v-model="form.brokerName" required disabled></b-form-input>
           </b-form-group>
         </b-col>
-        <b-col md="1" class="col-padding-margin-right">
-          <b-form-group id="ageLbl" label="Age" label-for="age">
-            <b-form-input id="age" v-model="form.age" disabled placeholder></b-form-input>
-          </b-form-group>
-        </b-col>
         <b-col md class="col-padding-margin-right">
           <b-form-group id="addr1Lbl" label="Mother/Father" label-for="addr1">
             <b-form-input id="addr1" disabled v-model="form.addr1"></b-form-input>
@@ -40,6 +35,11 @@
         <b-col md="2">
           <b-form-group id="mobileNoLbl" label="Mobile No" label-for="mobileNo">
             <b-form-input id="mobileNo" disabled v-model="form.mobileNo"></b-form-input>
+          </b-form-group>
+        </b-col>
+         <b-col md="1" class="col-padding-margin-right">
+          <b-form-group id="ageLbl" label="Age" label-for="age">
+            <b-form-input id="age" v-model="form.age" disabled placeholder></b-form-input>
           </b-form-group>
         </b-col>
       </b-row>
@@ -97,7 +97,7 @@
                 id="bookingNo"
                 v-model="form.bookings.bookingNo"
                 required
-                disabled
+                :disabled="displayFlg"
                 v-bind:class="{ 'is-invalid': attemptSubmit && bookingNoVal }"
               ></b-form-input>
             </b-form-group>
@@ -422,6 +422,7 @@ export default {
   components: { Multiselect },
   data() {
     return {
+      actualBookingNo: null,
         formatter:{},
         displayFlg: false,
       req: {
@@ -509,10 +510,7 @@ export default {
     this.search = this.$route.params.search;
   },
   mounted() {
-       this.formatter = new Intl.NumberFormat('en-US', {
-            style: 'currency',
-            currency: 'INR',
-        });
+       this.formatter = new Intl.NumberFormat('en-IN');
     this.typeOfItems = this.$store.state.master.typeOfItems;
     this.getsSelectedAccount();
   },
@@ -536,15 +534,15 @@ export default {
       }
       return null;
     },
-    updateBooking() {
-      let val  = event.srcElement.value;
+    updateBooking(event) {
+      let val  = event.target.value;
       this.attemptSubmit = true;
-      this.$event.srcElement;
      const updateBooking =  {
         brokerNo: this.form.brokerNo,
         companyCode: this.$store.state.selectedCompany.value,
         bookingDate: this.form.bookings.bookingDate,
         bookingNo: this.form.bookings.bookingNo,
+        bookingCode: this.actualBookingNo,
         tranType: this.form.bookings.tranType,
         grossWeight: this.form.bookings.grossWeight,
         netWeight:this.form.bookings.netWeight,        
@@ -687,6 +685,7 @@ export default {
             }
            
             this.form = response.data;
+            this.actualBookingNo = this.form.bookings.bookingNo;
             this.form.bookings.bookingDate = moment(this.bookingDate,"DD/MM/YYYY");
             this.form.bookings.dueDate = moment(this.dueDate, "DD/MM/YYYY");
             this.form.bookings.valueDate = moment(this.valueDate, "DD/MM/YYYY");

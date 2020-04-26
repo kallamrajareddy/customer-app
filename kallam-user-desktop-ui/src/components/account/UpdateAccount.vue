@@ -6,7 +6,7 @@
       </b-col>
     </b-row>
     <b-form ref="form" @submit.stop.prevent>
-      <b-row>
+     <b-row>
         <b-col md="1" class="col-padding-margin-right">
           <b-form-group id="brokerNoLbl" label="A/C Code" label-for="brokerNo">
             <b-form-input id="brokerNo" v-model="form.brokerNo" required disabled></b-form-input>
@@ -22,6 +22,7 @@
           >
             <b-form-input
               id="brokerName"
+              @keypress="checkFormValidity"
               :state="nameState"
               v-model="form.brokerName"
               required
@@ -38,8 +39,13 @@
             <b-form-select id="gender" v-model="form.gender" :options="genderOptions"></b-form-select>
           </b-form-group>
         </b-col>
+        <b-col md="1" class="col-padding-margin-right">
+          <b-form-group id="ageLbl" label="Age" label-for="age">
+            <b-form-input id="age" @blur="changeDOB" v-model="form.age" placeholder></b-form-input>
+          </b-form-group>
+        </b-col>
         <b-col md="2" class="col-padding-margin-right">
-          <label for="dob">Data Of Birth</label>
+          <label for="dob">Date Of Birth</label>
           <b-input-group>
             <date-picker
                 v-model="dateDob"
@@ -48,20 +54,23 @@
               ></date-picker>
           </b-input-group>
         </b-col>
-        <b-col md="1" class="col-padding-margin-right">
-          <b-form-group id="ageLbl" label="Age" label-for="age">
-            <b-form-input id="age" v-model="form.age" disabled placeholder></b-form-input>
-          </b-form-group>
-        </b-col>
         <b-col md="2" class="col-padding-margin-right">
-          <b-form-group id="aadharNoLbl" label="Aadhar Number" label-for="aadharNo">
-            <b-form-input id="aadharNo" v-model="form.aadharNo"></b-form-input>
-          </b-form-group>
+          <label for="dow">Date Of Creation</label>
+          <b-input-group>
+            <b-form-input id="dow" disabled v-model="dow" type="text" placeholder="DD/MM/YYYY"></b-form-input>
+            <!-- <b-input-group-append>
+              <b-form-datepicker
+                v-model="form.dow"
+                button-only
+                right
+                locale="en-US"
+                aria-controls="dob"
+              ></b-form-datepicker>
+            </b-input-group-append>-->
+          </b-input-group>
         </b-col>
       </b-row>
       <b-row>
-        <b-col md="7">
-          <b-row>
             <b-col md>
               <b-form-group id="occupationLbl" label="Occupation" label-for="occupation">
                 <b-form-select
@@ -86,15 +95,55 @@
                 <b-form-input id="otherPhones2" v-model="form.otherPhones2"></b-form-input>
               </b-form-group>
             </b-col>
+            <b-col md>
+          <b-form-group id="addr2Lbl" label="Door No" label-for="addr2">
+            <b-form-input id="addr2" v-model="form.addr2"></b-form-input>
+          </b-form-group>
+        </b-col>
+         <b-col md>
+          <b-form-group id="addr3Lbl" label="Street" label-for="addr3">
+            <b-form-input id="addr3" v-model="form.addr3"></b-form-input>
+          </b-form-group>
+        </b-col>
+          </b-row>
+      <b-row>
+        <b-col md="7">
+           <b-row>
+        <b-col md>
+          <b-form-group id="areaLbl" label="Area" label-for="area">
+            <b-form-input id="area" v-model="form.area"></b-form-input>
+          </b-form-group>
+        </b-col>
+        <b-col md>
+          <b-form-group id="townLbl" label="Town" label-for="town">
+            <b-form-input id="town" v-model="form.town"></b-form-input>
+          </b-form-group>
+        </b-col>
+        <b-col md>
+          <b-form-group id="districtLbl" label="District" label-for="district">
+            <b-form-input id="district" v-model="form.district"></b-form-input>
+          </b-form-group>
+        </b-col>
+        <b-col md="2">
+          <b-form-group id="zipCodeLbl" label="ZipCode" label-for="zipCode">
+            <b-form-input id="zipCode" v-model="form.zipCode" maxlength="6"></b-form-input>
+          </b-form-group>
+        </b-col>
           </b-row>
           <b-row>
             <b-col md>
-              <b-form-group
-                id="contact1MobileLbl"
-                label="Intro I Mobile"
-                label-for="relationPhones"
-              >
-                <b-form-input id="contact1Mobile" disabled v-model="form.contact1Mobile"></b-form-input>
+              <b-form-group id="contactPerson1Lbl" label="Intro By I" label-for="contactPerson1">
+                <div style="display: flex;">
+                  <b-form-input id="contactPerson1" v-model="form.contactPerson1" placeholder></b-form-input>
+                  <b-button
+                    variant="primary"
+                    @click="searchContact1Person"
+                    :disabled="(form.contactPerson1 == null || form.contactPerson1.length<3)"
+                  >
+                    <b-icon icon="search" aria-hidden="true"></b-icon>
+                    <span class="sr-only">Search</span>
+                  </b-button>
+                </div>
               </b-form-group>
             </b-col>
             <b-col md>
@@ -111,29 +160,29 @@
               </b-form-group>
             </b-col>
             <b-col md>
-              <b-form-group id="contactPerson1Lbl" label="Intro By I" label-for="contactPerson1">
-                <div style="display: flex;">
-                  <b-form-input id="contactPerson1" v-model="form.contactPerson1" placeholder></b-form-input>
-                  <b-button
-                    variant="primary"
-                    @click="searchContact1Person"
-                    :disabled="(form.contactPerson1 == null || form.contactPerson1.length<3)"
-                  >
-                    <b-icon icon="search" aria-hidden="true"></b-icon>
-                    <span class="sr-only">Search</span>
-                  </b-button>
-                </div>
+              <b-form-group
+                id="contact1MobileLbl"
+                label="Intro I Mobile"
+                label-for="relationPhones"
+              >
+                <b-form-input id="contact1Mobile" disabled v-model="form.contact1Mobile"></b-form-input>
               </b-form-group>
             </b-col>
           </b-row>
           <b-row>
             <b-col md>
-              <b-form-group
-                id="contact2MobileLbl"
-                label="Intro II Mobile"
-                label-for="contact2Mobile"
-              >
-                <b-form-input id="contact2Mobile" disabled v-model="form.contact2Mobile"></b-form-input>
+              <b-form-group id="contactPerson2Lbl" label="Intro By II" label-for="contactPerson2">
+                <div style="display: flex;">
+                  <b-form-input id="contactPerson2" v-model="form.contactPerson2" placeholder></b-form-input>
+                  <b-button
+                    variant="primary"
+                    @click="searchContact2Person"
+                    :disabled="(form.contactPerson2 == null || form.contactPerson2.length<3)"
+                  >
+                    <b-icon icon="search" aria-hidden="true"></b-icon>
+                    <span class="sr-only">Search</span>
+                  </b-button>
+                </div>
               </b-form-group>
             </b-col>
             <b-col md>
@@ -150,21 +199,37 @@
               </b-form-group>
             </b-col>
             <b-col md>
-              <b-form-group id="contactPerson2Lbl" label="Intro By II" label-for="contactPerson2">
-                <div style="display: flex;">
-                  <b-form-input id="contactPerson2" v-model="form.contactPerson2" placeholder></b-form-input>
-                  <b-button
-                    variant="primary"
-                    @click="searchContact2Person"
-                    :disabled="(form.contactPerson2 == null || form.contactPerson2.length<3)"
-                  >
-                    <b-icon icon="search" aria-hidden="true"></b-icon>
-                    <span class="sr-only">Search</span>
-                  </b-button>
-                </div>
+              <b-form-group
+                id="contact2MobileLbl"
+                label="Intro II Mobile"
+                label-for="contact2Mobile"
+              >
+                <b-form-input id="contact2Mobile" disabled v-model="form.contact2Mobile"></b-form-input>
               </b-form-group>
             </b-col>
           </b-row>
+          <b-row>
+        <b-col md="2">
+          <b-form-group id="aadharNoLbl" label="Aadhar Number" label-for="aadharNo">
+            <b-form-input id="aadharNo" v-model="form.aadharNo"></b-form-input>
+          </b-form-group>
+        </b-col>
+        <b-col md="3">
+          <b-form-group id="emailLbl" label="Email" label-for="email">
+            <b-form-input id="email" v-model="form.email"></b-form-input>
+          </b-form-group>
+        </b-col>
+        <b-col md="2">
+          <b-form-group id="ownrentLbl" label="Own or Rent" label-for="ownrent">
+            <b-form-checkbox id="ownrent" v-model="form.ownrent"></b-form-checkbox>
+          </b-form-group>
+        </b-col>
+        <b-col md>
+          <b-form-group id="remarksLbl" label="Remarks" label-for="remarks" style="color:red;">
+            <b-form-textarea id="remarks" v-model="form.remarks" rows="3" max-rows="6"></b-form-textarea>
+          </b-form-group>
+        </b-col>
+      </b-row>
         </b-col>
         <b-col md>
           <b-row>
@@ -179,7 +244,7 @@
                 <div v-if="!imageData" id="preview">
                   <b-img
                     v-if="!imageData"
-                    :src="'http://localhost:8182/images/'
+                    :src="'/images/'
               +form.brokerNo+'.jpg'"
                     thumbnail
                     fluid
@@ -201,7 +266,7 @@
                 ></b-img>
                 <b-img
                   v-else
-                  :src="'http://localhost:8182/images/'
+                  :src="'/images/'
               +form.contact1PersonId+'.jpg'"
                   thumbnail
                   fluid
@@ -220,7 +285,7 @@
                 ></b-img>
                 <b-img
                   v-else
-                  :src="'http://localhost:8182/images/'
+                  :src="'/images/'
               +form.contact2PersonId+'.jpg'"
                   thumbnail
                   fluid
@@ -229,61 +294,6 @@
               </div>
             </b-col>
           </b-row>
-        </b-col>
-      </b-row>
-      <b-row>
-        <b-col md="2" class="col-padding-margin-right">
-          <label for="dow">Data Of Creation</label>
-          <b-input-group>
-            <b-form-input id="dow" disabled v-model="dow" type="text" placeholder="DD/MM/YYYY"></b-form-input>
-          </b-input-group>
-        </b-col>
-        <b-col md>
-          <b-form-group id="emailLbl" label="Email" label-for="email">
-            <b-form-input id="email" v-model="form.email"></b-form-input>
-          </b-form-group>
-        </b-col>
-        <b-col md="1">
-          <b-form-group id="ownrentLbl" label="Own or Rent" label-for="ownrent">
-            <b-form-checkbox id="ownrent" v-model="form.ownrent"></b-form-checkbox>
-          </b-form-group>
-        </b-col>
-        <b-col md>
-          <b-form-group id="addr2Lbl" label="Door No" label-for="addr2">
-            <b-form-input id="addr2" v-model="form.addr2"></b-form-input>
-          </b-form-group>
-        </b-col>
-        <b-col md>
-          <b-form-group id="addr3Lbl" label="Street" label-for="addr3">
-            <b-form-input id="addr3" v-model="form.addr3"></b-form-input>
-          </b-form-group>
-        </b-col>
-      </b-row>
-      <b-row>
-        <b-col md>
-          <b-form-group id="areaLbl" label="Area" label-for="area">
-            <b-form-input id="area" v-model="form.area"></b-form-input>
-          </b-form-group>
-        </b-col>
-        <b-col md>
-          <b-form-group id="townLbl" label="Town" label-for="town">
-            <b-form-input id="town" v-model="form.town"></b-form-input>
-          </b-form-group>
-        </b-col>
-        <b-col md>
-          <b-form-group id="districtLbl" label="District" label-for="district">
-            <b-form-input id="district" v-model="form.district"></b-form-input>
-          </b-form-group>
-        </b-col>
-        <b-col md="1">
-          <b-form-group id="zipCodeLbl" label="ZipCode" label-for="zipCode">
-            <b-form-input id="zipCode" v-model="form.zipCode" maxlength="6"></b-form-input>
-          </b-form-group>
-        </b-col>
-        <b-col md>
-          <b-form-group id="remarksLbl" label="Remarks" label-for="remarks" style="color: red;">
-            <b-form-textarea id="remarks" v-model="form.remarks" rows="3" max-rows="6"></b-form-textarea>
-          </b-form-group>
         </b-col>
       </b-row>
       <b-row bg-variant="light" style="position:sticky;bottom:0;padding-top:10px;">
@@ -395,7 +405,7 @@
                   <b-avatar
                     class="align-baseline"
                     style="backgroundcolor"
-                    :src="'http://localhost:8182/images/'
+                    :src="'/images/'
               +data.item.brokerNo+'.jpg'"
                   ></b-avatar>
                   <span

@@ -100,7 +100,7 @@
               width="150px"
               height="150px"
               v-if="form.brokerNo != null"
-              :src="'http://localhost:8182/images/'
+              :src="'/images/'
               +form.brokerNo+'.jpg'"
               alt="Fluid image"
             ></b-img>
@@ -127,6 +127,8 @@
             @row-dblclicked="selectedBooking"
             select-mode="single"
             :fields="fields"
+            :sort-by.sync="sortBy"
+      :sort-desc.sync="sortDesc"
             :items="form.runningAccounts"
           >
           <template v-slot:cell(bookingDate)="row">
@@ -168,6 +170,8 @@
             @row-dblclicked="selectedBooking"
             select-mode="single"
             :fields="fields"
+            :sort-by.sync="sortBy"
+      :sort-desc.sync="sortDesc"
             :items="form.activeBookings"
           >
           <template v-slot:cell(bookingDate)="row">
@@ -207,6 +211,8 @@
             @row-dblclicked="selectedBooking"
             select-mode="single"
             :fields="fields"
+            :sort-by.sync="sortBy"
+      :sort-desc.sync="sortDesc"
             :items="form.pendingBookings"
           >
           <template v-slot:cell(bookingDate)="row">
@@ -246,6 +252,8 @@
             @row-dblclicked="selectedBooking"
             select-mode="single"
             :fields="fields"
+            :sort-by.sync="sortBy"
+      :sort-desc.sync="sortDesc"
             :items="form.auctionedBookings"
           >
           <template v-slot:cell(bookingDate)="row">
@@ -285,6 +293,8 @@
             @row-dblclicked="selectedBooking"
             select-mode="single"
             :fields="fields"
+            :sort-by.sync="sortBy"
+      :sort-desc.sync="sortDesc"
             :items="form.closedBookings"
           >
            <template v-slot:cell(bookingDate)="row">
@@ -361,7 +371,9 @@ export default {
         { key: "totalIntrestPaid", label: "Intrest Paid", sortable: true },
         { key: "closedDate", label: "Closed Date", sortable: true },
         { key: "totalTrans", label: "Total Transactions", sortable: true }
-      ]
+      ],
+      sortBy: 'bookingDate',
+      sortDesc: false,
     };
   },
   methods: {
@@ -439,10 +451,7 @@ export default {
     }
   },
   mounted() {
-      this.formatter = new Intl.NumberFormat('en-US', {
-            style: 'currency',
-            currency: 'INR',
-        });
+      this.formatter = new Intl.NumberFormat('en-IN');
     this.getsSelectedBroker();
   },
   created() {
