@@ -28,7 +28,7 @@
           </b-form-group>
         </b-col>
         <b-col md class="col-padding-margin-right">
-          <b-form-group id="addr1Lbl" label="Mother/Father" label-for="addr1">
+          <b-form-group id="addr1Lbl" label="Mother/Father/Husband" label-for="addr1">
             <b-form-input id="addr1" disabled v-model="header.addr1"></b-form-input>
           </b-form-group>
         </b-col>
@@ -294,16 +294,28 @@
               <b-form-input id="purity"   type="number" v-model="form.purity"></b-form-input>
             </b-form-group>
           </b-col>
-          <b-col md class="col-padding-margin-right">
-            <label for="dob">Due Date</label>
+          <b-col md="1" class="col-padding-margin-right">
+            <label for="dueMonths">Due Months</label>
             <b-input-group>
-              <date-picker v-model="dueDate"  :config="options" placeholder="DD/MM/YYYY"></date-picker>
+              <b-form-input id="dueMonths" @blur="addDMonths"   type="number" v-model="dueMonths"></b-form-input>
             </b-input-group>
           </b-col>
-          <b-col md class="col-padding-margin-right">
-            <label for="dob">Expiery Date</label>
+          <b-col md="2" class="col-padding-margin-right">
+            <label for="dob">Due Date</label>
             <b-input-group>
-              <date-picker v-model="valueDate"  :config="options" placeholder="DD/MM/YYYY"></date-picker>
+              <date-picker disabled v-model="dueDate"  :config="options" placeholder="DD/MM/YYYY"></date-picker>
+            </b-input-group>
+          </b-col>
+           <b-col md="1" class="col-padding-margin-right">
+            <label for="expMonths">Exp Months</label>
+            <b-input-group>
+              <b-form-input id="expMonths"  @blur="addVMonths"   type="number" v-model="expMonths"></b-form-input>
+            </b-input-group>
+          </b-col>
+          <b-col md="2" class="col-padding-margin-right">
+            <label for="expDate">Expiery Date</label>
+            <b-input-group>
+              <date-picker v-model="valueDate" disabled  :config="options" placeholder="DD/MM/YYYY"></date-picker>
             </b-input-group>
           </b-col>
         </b-row>
@@ -349,6 +361,8 @@ export default {
   components: { Multiselect },
   data() {
     return {
+      dueMonths: null,
+      expMonths: null,
       umoOptions: ["Grams", "Kgs"],
       selectedTrans: 0,
       typeOfIntrest: [
@@ -421,7 +435,7 @@ export default {
   filters: {
     toWords: function(value) {
       if (!value) return "";
-      converter.indianConversion(value, {characterCase: 'UPPERCASE'});
+     return converter.indianConversion(value, {characterCase: 'UPPERCASE'});
     }
   },
   created() {
@@ -433,6 +447,18 @@ export default {
     this.getsSelectedAccount();
   },
   methods: {
+     addDMonths() {
+      if (this.dueMonths < 1) return false;
+      this.dueDate = moment(this.dueDate, "DD/MM/YYYY")
+        .add(this.dueMonths, "months")
+        .format("DD/MM/YYYY");
+    },
+    addVMonths() {
+      if (this.expMonths < 1) return false;
+      this.valueDate = moment(this.valueDate, "DD/MM/YYYY")
+        .add(this.expMonths, "months")
+        .format("DD/MM/YYYY");
+    },
     createBooking() {
        let val = event.srcElement.value;
       this.attemptSubmit=true;

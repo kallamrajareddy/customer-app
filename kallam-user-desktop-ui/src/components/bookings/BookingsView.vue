@@ -30,7 +30,7 @@
               </b-form-group>
             </b-col>
             <b-col md class="col-padding-margin-right">
-              <b-form-group id="addr1Lbl" label="Mother/Father" label-for="addr1">
+              <b-form-group id="addr1Lbl" label="Mother/Father/Husband" label-for="addr1">
                 <b-form-input id="addr1" disabled v-model="form.addr1"></b-form-input>
               </b-form-group>
             </b-col>

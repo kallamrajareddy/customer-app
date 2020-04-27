@@ -60,8 +60,8 @@
           </b-form-group>
         </b-col>
         <b-col md="2">
-          <b-form-group id="prinipleLbl" label="Priniple" label-for="priniple" style="color:red;">
-            <b-form-input id="priniple" v-model="submitForm.priniple" style="color:red;"></b-form-input>
+          <b-form-group id="prinipleLbl" label="Principle" label-for="priniple" style="color:red;">
+            <b-form-input id="priniple" v-model="submitForm.principle" style="color:red;"></b-form-input>
           </b-form-group>
         </b-col>
         <b-col md="2">
@@ -434,7 +434,7 @@ export default {
       }
       let daysDiff;
       let prin = parseFloat(
-        this.amounts.prinipleBalance.replace(/[, ]+/g, "").trim()
+        this.amounts.prinipleBalance
       );
       let rate = parseFloat(this.form.intrestRate);
       let intPerYear = 0.0;
@@ -739,7 +739,7 @@ if(this.req.brokerNo == null || this.req.bookingNo == null)this.$router.push("/r
   computed: {
     addVal() {
       if (
-        (this.submitForm.priniple != null && this.submitForm.priniple > 0) ||
+        (this.submitForm.principle != null && this.submitForm.principle > 0) ||
         (this.submitForm.intrest != null && this.submitForm.intrest > 0)
       ){
         return false;
