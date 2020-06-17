@@ -211,7 +211,6 @@
                   <b-td style="border-top:0px">
                     <b-form-input
                       id="priniplePaidTil"
-                      type="number"
                       disabled
                       :value="formatter.format(Math.round(amounts.priniplePaidTil))"
                     ></b-form-input>

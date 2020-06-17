@@ -13,6 +13,8 @@ import ViewModifyBooking from '@/components/bookings/ViewModifyBooking'
 import Recipts from '@/components/recipts/Recipts'
 import NewRecipt from '@/components/recipts/NewRecipt'
 import DeleteRecipt from '@/components/recipts/DeleteRecipt'
+import Reports from '@/components/reports/Reports'
+import PrintReports from '@/components/reports/PrintReports'
 import store from '@/store/store'
 // import axios from 'axios'
 
@@ -111,6 +113,22 @@ const routes = [{
         path: '/delete-recipt',
         name: 'DeleteRecipt',
         component: DeleteRecipt,
+        meta: {
+            requiresAuth: true
+        }
+    },
+    {
+        path: '/reports',
+        name: 'Reports',
+        component: Reports,
+        meta: {
+            requiresAuth: true
+        }
+    },
+    {
+        path: '/printReports',
+        name: 'PrintReports',
+        component: PrintReports,
         meta: {
             requiresAuth: true
         }

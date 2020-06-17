@@ -683,7 +683,7 @@ export default {
                 // })
                 
             }
-           
+            this.onloadTransType(response.data.bookings.tranType);
             this.form = response.data;
             this.actualBookingNo = this.form.bookings.bookingNo;
             this.form.bookings.bookingDate = moment(this.bookingDate,"DD/MM/YYYY");
@@ -721,6 +721,15 @@ export default {
     },
     converter() {
       return converter;
+    },
+    onloadTransType(label){
+      this.typeOfLoans.forEach((loanType, idx) => {
+        if(label == loanType.label ){
+          this.selectedTrans = idx;
+        }
+      })
+      this.loanOptions = this.typeOfLoans[this.selectedTrans].options;
+      this.form.bookings.tranType = this.typeOfLoans[this.selectedTrans].label;
     },
     changeTransType() {
       this.form.bookings.loanType = "";

@@ -23,6 +23,11 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import '@fortawesome/fontawesome-free/css/all.css'
 import '@fortawesome/fontawesome-free/js/all.js'
 
+
+import moment from 'moment'
+
+Vue.prototype.moment = moment
+
 library.add(faUserSecret)
 $.extend(true, $.fn.datetimepicker.defaults, {
     icons: {

@@ -29,6 +29,14 @@
             <b-dropdown-divider></b-dropdown-divider>
             <b-dropdown-item-button @click="$router.push('/recipts')">Recipts</b-dropdown-item-button>
           </b-dropdown>
+          <b-dropdown variant="primary">
+            <template v-slot:button-content>
+              <b-icon icon="file-earmark-text"></b-icon>Reports
+            </template>
+            <b-dropdown-item-button @click="$router.push('/reports')">Financial Reports</b-dropdown-item-button>
+            <b-dropdown-divider></b-dropdown-divider>
+            <!-- <b-dropdown-item-button @click="$router.push('/recipts')">Recipts</b-dropdown-item-button> -->
+          </b-dropdown>
 
           <!-- <b-nav-form>
             <b-form-input size="sm" class="mr-sm-2" placeholder="Account Search"></b-form-input>
