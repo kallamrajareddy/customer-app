@@ -45,7 +45,7 @@ export default {
         format: "DD/MM/YYYY",
         useCurrent: true
       },
-      reportDate: new Date(),
+      reportDate: null,
       selected: "daily",
       options: [
         { text: "Daily", value: "daily" },
@@ -61,6 +61,9 @@ export default {
   },
   methods: {
     generateReport() {
+      if(this.reportDate == null){
+        return;
+      }
       let url = "/middleware/api/secured/get-daily-report/";
       if (this.selected == "monthly") {
         url = "/middleware/api/secured/get-month-report/";

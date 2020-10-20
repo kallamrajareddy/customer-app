@@ -65,8 +65,14 @@
 
           <!--  -->
         </b-navbar-nav>
+        <b-navbar-nav>
+          <b-button variant="danger text-center" @click="changeCompany">Change Company</b-button>
+        </b-navbar-nav>
 
         <!-- Right aligned nav items -->
+        <b-navbar-nav  class="ml-auto">
+         <span style="color: white"> {{this.$store.state.selectedCompany.text}} </span>
+        </b-navbar-nav>
         <b-navbar-nav class="ml-auto" v-if="isLoggedIn">
           <b-dropdown variant="primary">
             <template v-slot:button-content>
@@ -82,6 +88,46 @@
         </b-navbar-nav>
       </b-collapse>
     </b-navbar>
+    <b-modal id="modal-company" ref="companyModal" size="lg" hide-header hide-footer>
+      <b-card title="Company Selection">
+        <form ref="form" @submit.stop.prevent="handleSubmit">
+          <b-row>
+            <b-col>
+              <b-form-group
+                label="Company"
+                label-for="company"
+                :state="companyState"
+                invalid-feedback="Company is Required"
+              >
+                <b-form-select
+                  required
+                  :state="companyState"
+                  id="company"
+                  v-model="selectedComp"
+                  :options="company"
+                  class="mb-3"
+                  @change="checkFormValidity"
+                >
+                  <!-- This slot appears above the options from 'options' prop -->
+                  <template v-slot:first>
+                    <b-form-select-option :value="null" disabled>-- Please select a Company --</b-form-select-option>
+                  </template>
+                </b-form-select>
+              </b-form-group>
+            </b-col>
+          </b-row>
+          <!-- <b-row>
+            <b-col style="text-align: center !important">
+              <b-button
+                variant="primary text-center"
+                @click="selectCompany"
+                :disabled="selectCompany==null"
+              >Select</b-button>
+            </b-col>
+          </b-row> -->
+        </form>
+      </b-card>
+    </b-modal>
     <router-view />
   </div>
 </template>
@@ -90,6 +136,9 @@ export default {
   
   data() {
     return {
+      company: [],
+      selectedComp: null,
+      companyState: null
       // username: ""
     };
   },
@@ -97,11 +146,28 @@ export default {
     forword() {
       this.$router.push("/");
     },
+    changeCompany(){
+      this.$bvModal.show("modal-company");
+    },
     logout() {
       this.$store.dispatch("logout").then(() => {
         this.$router.push("/login");
       });
+    },
+    checkFormValidity(){
+      if (this.selectedComp !== null) {
+        let select = this.company.find(
+          comp => comp.value === this.selectedComp
+        );
+        this.$store.dispatch("userComp", select);
+        this.$bvModal.hide("modal-company");
+      this.$router.push("/bookings");
+      }
     }
+  },
+  mounted() {
+    this.company = this.$store.state.master.company;
+    this.selectedComp = this.$store.state.selectedCompany.value;
   },
   computed: {
     isLoggedIn() {
