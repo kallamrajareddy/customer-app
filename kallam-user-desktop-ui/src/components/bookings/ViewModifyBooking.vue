@@ -402,6 +402,12 @@
               v-if="!form.bookings.closed"
             >New Recipt</b-button>&nbsp;&nbsp;
             <b-button
+              variant="primary text-center"
+              @click="printDoc"
+              value="printDoc"
+              v-if="!form.bookings.closed"
+            >Print Booking</b-button>&nbsp;&nbsp;
+            <b-button
               variant="secondary text-center"
                @click="$router.push({name: 'BookingsView', params :{brokerNo: form.brokerNo, search: form.brokerNo}})"
               value="back"
@@ -521,6 +527,10 @@ export default {
           let companyCode =  this.$store.state.selectedCompany.value;
          // console.log(brokerNo,bookingNo,companyCode)
           this.$router.push({name: "NewRecipt", params :{req:{brokerNo, bookingNo,companyCode}, search: this.search }})
+      },
+      printDoc(){
+        let form = this.form;
+        this.$router.push({name: "PrintBooking", params :{req:{form}, search: this.search }})
       },
       converteMongoToDate(dateObject) {
       //{  "month": "AUGUST",  "year": 1960,  "dayOfMonth": 5,  "hour": 5,  "minute": 30,  "second": 0}

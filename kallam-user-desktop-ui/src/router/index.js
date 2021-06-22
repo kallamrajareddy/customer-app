@@ -15,6 +15,7 @@ import NewRecipt from '@/components/recipts/NewRecipt'
 import DeleteRecipt from '@/components/recipts/DeleteRecipt'
 import Reports from '@/components/reports/Reports'
 import PrintReports from '@/components/reports/PrintReports'
+import PrintBooking from '@/components/print/PrintBooking'
 import store from '@/store/store'
 // import axios from 'axios'
 
@@ -89,6 +90,14 @@ const routes = [{
         path: '/view-modify-booking',
         name: 'ViewModifyBooking',
         component: ViewModifyBooking,
+        meta: {
+            requiresAuth: true
+        }
+    },
+    {
+        path: '/print-booking',
+        name: 'PrintBooking',
+        component: PrintBooking,
         meta: {
             requiresAuth: true
         }
